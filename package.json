@@ -8,9 +8,10 @@
   "scripts": {
     "setup": "uv sync --locked --all-packages && pnpm install --frozen-lockfile",
     "lint": "uv run --locked ruff check . && uv run --locked ruff format --check .",
-    "typecheck": "uv run --locked --all-packages mypy apps/api/src apps/api/tests packages/contracts/src packages/contracts/tests",
+    "typecheck": "uv run --locked --all-packages mypy apps/api/src apps/api/tests packages/contracts/src packages/contracts/tests infra/migrations",
     "test": "uv run --locked --all-packages pytest",
     "build": "uv build --all-packages --out-dir artifacts/python",
+    "db:migrate": "uv run --locked --all-packages alembic -c infra/alembic.ini upgrade head",
     "dev:api": "uv run --locked --package caretrace-api uvicorn caretrace_api.main:create_app --factory --reload --reload-dir apps/api/src --host 127.0.0.1 --no-access-log"
   }
 }

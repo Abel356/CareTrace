@@ -45,6 +45,11 @@ See `.env.example` for the request-size limit and explicit host and browser-orig
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
 carry a server-generated request ID, which also appears in the structured request log.
 
+To initialize persistence, set `CARETRACE_DATABASE_URL` using `.env.example` as a
+template, then run `pnpm run db:migrate`. PostgreSQL requires the server's pgvector
+extension files and a migration role able to install the extension. Use a separate,
+lower-privilege connection for the running API. SQLite is supported for local testing.
+
 ## Status
 
 Repository foundation and discovery work are in progress.
