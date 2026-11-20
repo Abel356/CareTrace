@@ -40,6 +40,10 @@ Run `pnpm run dev:api` from the repository root, then open `http://127.0.0.1:800
 The API exposes `/livez` for process liveness, `/readyz` for service readiness, and
 `/api/v1/build` for the installed API version. It currently runs without a database.
 
+See `.env.example` for the request-size limit and explicit host and browser-origin
+allowlists. Production requires an explicit host list and HTTPS origins. Error responses
+carry a server-generated request ID, which also appears in the structured request log.
+
 ## Status
 
 Repository foundation and discovery work are in progress.

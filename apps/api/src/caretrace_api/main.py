@@ -4,10 +4,11 @@ from typing import Literal
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from caretrace_api.errors import register_error_handlers
-from caretrace_api.middleware import RequestContextMiddleware
+from caretrace_api.middleware import RequestBoundaryMiddleware, RequestContextMiddleware
 from caretrace_api.settings import Settings
 
 
@@ -46,6 +47,13 @@ def create_app(
     )
 
     register_error_handlers(app)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_origins,
+        allow_methods=("GET",),
+        expose_headers=("X-Request-ID",),
+    )
+    app.add_middleware(RequestBoundaryMiddleware, settings=settings)
     app.add_middleware(RequestContextMiddleware, id_factory=id_factory)
 
     @app.get("/livez", summary="Process liveness")

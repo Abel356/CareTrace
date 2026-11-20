@@ -5,6 +5,9 @@
 - Established safe ignore rules, pinned the Python and JavaScript workspace tooling,
   added local secret and style checks, and configured dependency updates. The root setup
   and lint commands and the repository-wide hooks passed.
+- Added the runnable FastAPI application, health and build endpoints, production settings
+  validation, explicit host and CORS rules, a body-size limit, and structured request logs.
+  HTTP error responses carry server-assigned IDs and omit request and exception details.
 
 ## November 19, 2026
 
