@@ -1,4 +1,5 @@
-from collections.abc import Callable
+from collections.abc import AsyncIterator, Callable
+from contextlib import asynccontextmanager
 from importlib.metadata import version
 from typing import Literal
 from uuid import UUID, uuid4
@@ -7,6 +8,7 @@ from fastapi import APIRouter, FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from caretrace_api.database import Database
 from caretrace_api.errors import register_error_handlers
 from caretrace_api.middleware import RequestBoundaryMiddleware, RequestContextMiddleware
 from caretrace_api.settings import Settings
@@ -33,6 +35,22 @@ def create_app(
 ) -> FastAPI:
     settings = settings if settings is not None else Settings()
     local_docs = settings.environment != "production"
+    database_url = settings.get_database_url()
+    database = Database(database_url) if database_url is not None else None
+    check = (
+        readiness_check
+        if readiness_check is not None
+        else (database.is_ready if database else None)
+    )
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        try:
+            yield
+        finally:
+            if database is not None:
+                database.dispose()
+
     app = FastAPI(
         title="CareTrace API",
         version=version("caretrace-api"),
@@ -44,7 +62,9 @@ def create_app(
         docs_url="/docs" if local_docs else None,
         redoc_url=None,
         openapi_url="/openapi.json" if local_docs else None,
+        lifespan=lifespan,
     )
+    app.state.database = database
 
     register_error_handlers(app)
     app.add_middleware(
@@ -64,7 +84,7 @@ def create_app(
         "/readyz", responses={503: {"model": Readiness}}, summary="Service readiness"
     )
     def readiness(response: Response) -> Readiness:
-        if readiness_check is not None and not readiness_check():
+        if check is not None and not check():
             response.status_code = 503
             return Readiness(status="unavailable")
         return Readiness(status="ready")

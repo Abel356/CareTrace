@@ -6,7 +6,7 @@ import pytest
 from caretrace_api.main import create_app
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
-from pydantic import ValidationError
+from pydantic import SecretStr, ValidationError
 
 
 @pytest.fixture(autouse=True)
@@ -89,10 +89,14 @@ def test_production_requires_explicit_hosts_and_secure_cross_origin_access() -> 
             allowed_origins=("http://app.example.test",),
         )
 
+    with pytest.raises(ValidationError, match="PostgreSQL server and database name"):
+        Settings(environment="production", allowed_hosts=("api.example.test",))
+
     settings = Settings(
         environment="production",
         allowed_hosts=("api.example.test",),
         allowed_origins=("https://app.example.test",),
+        database_url=SecretStr("postgresql+psycopg://db.example.test/caretrace"),
     )
     with TestClient(
         create_app(settings), base_url="https://api.example.test"

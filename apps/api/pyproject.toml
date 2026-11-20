@@ -3,10 +3,16 @@ name = "caretrace-api"
 version = "0.1.0"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "caretrace-contracts>=0.1,<0.2",
     "fastapi>=0.122,<1",
+    "psycopg[binary]>=3.2,<4",
     "pydantic-settings>=2.12,<3",
+    "sqlalchemy>=2.0,<3",
     "uvicorn>=0.39,<1",
 ]
+
+[tool.uv.sources]
+caretrace-contracts = { workspace = true }
 
 [build-system]
 requires = ["uv_build>=0.13.9,<0.14"]

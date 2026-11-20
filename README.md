@@ -38,7 +38,8 @@ The lockfiles are generated with `uv lock` and `pnpm install --lockfile-only`.
 
 Run `pnpm run dev:api` from the repository root, then open `http://127.0.0.1:8000/docs`.
 The API exposes `/livez` for process liveness, `/readyz` for service readiness, and
-`/api/v1/build` for the installed API version. It currently runs without a database.
+`/api/v1/build` for the installed API version. Local development can run without a
+database. When a database URL is configured, readiness also checks database connectivity.
 
 See `.env.example` for the request-size limit and explicit host and browser-origin
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
