@@ -8,6 +8,9 @@
 - Added the runnable FastAPI application, health and build endpoints, production settings
   validation, explicit host and CORS rules, a body-size limit, and structured request logs.
   HTTP error responses carry server-assigned IDs and omit request and exception details.
+- Added immutable source and citation contracts, timed policy attestations, provisional
+  obligations, and the four evidence-checked coverage labels. Checklist packets bind a
+  reviewer decision to the exact versioned content and require traceable citations.
 
 ## November 19, 2026
 
