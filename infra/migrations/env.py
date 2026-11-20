@@ -1,7 +1,7 @@
 from alembic import context
 from caretrace_api.database import Database
-from caretrace_api.review_store import metadata
 from caretrace_api.settings import Settings
+from caretrace_api.workflow_store import metadata
 from sqlalchemy.engine import URL, Connection
 
 

@@ -11,6 +11,9 @@
 - Added immutable source and citation contracts, timed policy attestations, provisional
   obligations, and the four evidence-checked coverage labels. Checklist packets bind a
   reviewer decision to the exact versioned content and require traceable citations.
+- Added SQLAlchemy transactions, Alembic migrations, immutable source and policy versions,
+  tenant-scoped policy review records, and ordered append-only audit events for overrides
+  and approvals. Local migration and repository checks use SQLite and generated PostgreSQL SQL.
 
 ## November 19, 2026
 

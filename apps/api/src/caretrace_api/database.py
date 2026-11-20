@@ -45,17 +45,20 @@ def _sqlite_engine(url: URL) -> Engine:
             url,
             hide_parameters=True,
             poolclass=StaticPool,
-            connect_args={"check_same_thread": False},
+            connect_args={"autocommit": False, "check_same_thread": False},
         )
     else:
-        engine = create_engine(url, hide_parameters=True)
+        engine = create_engine(
+            url, hide_parameters=True, connect_args={"autocommit": False}
+        )
 
     @event.listens_for(engine, "connect")
     def enable_foreign_keys(connection: Connection, _: object) -> None:
-        cursor = connection.cursor()
+        previous = connection.autocommit
+        connection.autocommit = True
         try:
-            cursor.execute("PRAGMA foreign_keys=ON")
+            connection.execute("PRAGMA foreign_keys=ON").close()
         finally:
-            cursor.close()
+            connection.autocommit = previous
 
     return engine
