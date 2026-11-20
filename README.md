@@ -16,7 +16,20 @@ compliance, assess residents, or replace qualified clinical, privacy, or legal r
 - Source-grounded obligation maps, document-coverage reviews, and evidence checklists
 - Human-reviewed Markdown or PDF exports with an audit trail
 
-See [the product requirements](docs/PRD.md) and [tomorrow's plan](docs/TODO.md).
+See [the product requirements](docs/PRD.md), [architecture](docs/ARCHITECTURE.md),
+and [the next session plan](docs/TODO.md).
+
+## Development
+
+Install Python 3.13 (or let uv manage it), uv 0.13.9 or a later 0.13 release,
+Node.js 24, and pnpm 11.25.0. PostgreSQL 17 is the target for persistence development.
+
+```sh
+pnpm run setup
+pnpm run lint
+```
+
+The lockfiles are generated with `uv lock` and `pnpm install --lockfile-only`.
 
 ## Status
 
