@@ -1,4 +1,12 @@
-# Progress — November 19, 2026
+# Progress
+
+## November 20, 2026
+
+- Established safe ignore rules, pinned the Python and JavaScript workspace tooling,
+  added local secret and style checks, and configured dependency updates. The root setup
+  and lint commands and the repository-wide hooks passed.
+
+## November 19, 2026
 
 - Created the public `Abel356/CareTrace` GitHub repository on `main`.
 - Added the discovery PRD and a concise public-facing project overview.
