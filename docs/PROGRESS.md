@@ -18,6 +18,19 @@
   de-identified inputs. It preserves original bytes and checksums, rejects unsupported
   files and duplicates within a tenant, and returns separately parsed text. Upload routes,
   PDF parsing, and OCR remain future work.
+- Shipped a Next.js workspace with API status, evidence abstention, human review and data
+  guidance, and a generated OpenAPI TypeScript contract. Verified the available and
+  unavailable UI states against the running FastAPI and Next.js processes over loopback HTTP.
+- Added GitHub Actions for Python, live PostgreSQL 17 with pgvector, the web build, contract
+  drift, secret scanning, and pull-request dependency review. The hosted Python and web jobs
+  passed 61 Python tests, including the live migration, and seven web tests. The local suite
+  passed 60 Python tests and seven web tests, with the live PostgreSQL test skipped locally. Ruff, mypy,
+  ESLint, Prettier, both production builds, and the contract drift check passed.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/44773943926)
+- Pushed 17 commits for the foundation session, including this handoff. The recurring build
+  now completes one functional task per run and commits at 10-line code checkpoints.
+- The verified regulatory corpus, authenticated policy intake, and customer-facing export
+  remain pending. The test client emits one upstream deprecation warning.
 
 ## November 19, 2026
 
