@@ -14,6 +14,10 @@
 - Added SQLAlchemy transactions, Alembic migrations, immutable source and policy versions,
   tenant-scoped policy review records, and ordered append-only audit events for overrides
   and approvals. Local migration and repository checks use SQLite and generated PostgreSQL SQL.
+- Added a local UTF-8 text admission gate for public, synthetic, and authorized
+  de-identified inputs. It preserves original bytes and checksums, rejects unsupported
+  files and duplicates within a tenant, and returns separately parsed text. Upload routes,
+  PDF parsing, and OCR remain future work.
 
 ## November 19, 2026
 
