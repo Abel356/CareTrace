@@ -14,6 +14,10 @@ repos:
       - id: detect-secrets
         name: Check for secrets
         entry: uv run --locked detect-secrets-hook
+        # Package integrity digests are public, while other lockfile fields remain scanned.
+        args:
+          - --exclude-lines
+          - '^\s*(?:resolution: \{integrity: sha(?:512|1)-[A-Za-z0-9+/=]+\}|integrity: "sha(?:512|1)-[A-Za-z0-9+/=]+")\s*$'
         language: unsupported
         types: [text]
       - id: ruff
@@ -26,3 +30,9 @@ repos:
         entry: uv run --locked ruff format --check
         language: unsupported
         types: [python]
+      - id: web-lint
+        name: Web lint and format check
+        entry: pnpm --filter @caretrace/web lint
+        language: unsupported
+        files: ^apps/web/.*\.(ts|tsx|mjs|css|json)$
+        pass_filenames: false

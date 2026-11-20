@@ -50,6 +50,12 @@ template, then run `pnpm run db:migrate`. PostgreSQL requires the server's pgvec
 extension files and a migration role able to install the extension. Use a separate,
 lower-privilege connection for the running API. SQLite is supported for local testing.
 
+Run `pnpm run dev:web` in another terminal and open http://127.0.0.1:3000.
+The web server reads the API readiness endpoint. For a different API origin, copy
+`apps/web/.env.example` to `apps/web/.env.local` and set `CARETRACE_API_ORIGIN`.
+Run `pnpm run contracts:generate` after changing OpenAPI and `pnpm run contracts:check`
+to detect stale TypeScript contracts.
+
 ## Status
 
 Repository foundation and discovery work are in progress.
