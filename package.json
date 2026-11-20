@@ -11,6 +11,6 @@
     "typecheck": "uv run --locked --all-packages mypy apps/api/src apps/api/tests",
     "test": "uv run --locked --all-packages pytest",
     "build": "uv build --package caretrace-api --out-dir artifacts/api",
-    "dev:api": "uv run --locked --package caretrace-api uvicorn caretrace_api.main:create_app --factory --reload --reload-dir apps/api/src --host 127.0.0.1"
+    "dev:api": "uv run --locked --package caretrace-api uvicorn caretrace_api.main:create_app --factory --reload --reload-dir apps/api/src --host 127.0.0.1 --no-access-log"
   }
 }

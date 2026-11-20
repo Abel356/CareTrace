@@ -1,10 +1,13 @@
 from collections.abc import Callable
 from importlib.metadata import version
 from typing import Literal
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, FastAPI, Response
 from pydantic import BaseModel
 
+from caretrace_api.errors import register_error_handlers
+from caretrace_api.middleware import RequestContextMiddleware
 from caretrace_api.settings import Settings
 
 
@@ -25,6 +28,7 @@ def create_app(
     settings: Settings | None = None,
     *,
     readiness_check: Callable[[], bool] | None = None,
+    id_factory: Callable[[], UUID] = uuid4,
 ) -> FastAPI:
     settings = settings if settings is not None else Settings()
     local_docs = settings.environment != "production"
@@ -40,6 +44,9 @@ def create_app(
         redoc_url=None,
         openapi_url="/openapi.json" if local_docs else None,
     )
+
+    register_error_handlers(app)
+    app.add_middleware(RequestContextMiddleware, id_factory=id_factory)
 
     @app.get("/livez", summary="Process liveness")
     def liveness() -> Liveness:
