@@ -1,0 +1,34 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Private input and generated outputs
+/data/
+/uploads/
+/artifacts/
+/.tools/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# JavaScript and builds
+node_modules/
+.next/
+dist/
+coverage/
+*.tsbuildinfo
+.pnpm-store/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
