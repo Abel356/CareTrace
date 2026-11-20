@@ -1,0 +1,28 @@
+repos:
+  - repo: local
+    hooks:
+      - id: trailing-whitespace
+        name: Check trailing whitespace
+        entry: uv run --locked trailing-whitespace-fixer --markdown-linebreak-ext=md
+        language: unsupported
+        types: [text]
+      - id: detect-private-key
+        name: Check for private keys
+        entry: uv run --locked detect-private-key
+        language: unsupported
+        types: [text]
+      - id: detect-secrets
+        name: Check for secrets
+        entry: uv run --locked detect-secrets-hook
+        language: unsupported
+        types: [text]
+      - id: ruff
+        name: Ruff lint
+        entry: uv run --locked ruff check
+        language: unsupported
+        types: [python]
+      - id: ruff-format
+        name: Ruff format check
+        entry: uv run --locked ruff format --check
+        language: unsupported
+        types: [python]

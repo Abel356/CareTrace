@@ -27,6 +27,8 @@ Node.js 24, and pnpm 11.25.0. PostgreSQL 17 is the target for persistence develo
 ```sh
 pnpm run setup
 pnpm run lint
+uv run --locked pre-commit install
+uv run --locked pre-commit run --all-files
 ```
 
 The lockfiles are generated with `uv lock` and `pnpm install --lockfile-only`.
