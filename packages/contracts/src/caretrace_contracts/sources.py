@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from datetime import date
 from enum import StrEnum
-from typing import Annotated, Self
+from typing import Self
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, field_validator, model_validator
+from pydantic import AwareDatetime, field_validator, model_validator
 
-from caretrace_contracts.common import Contract, Label, Sha256, SourceUrl
+from caretrace_contracts.common import Contract, Label, Sha256, SourceUrl, TextSpan
 
 
 class Jurisdiction(StrEnum):
@@ -56,27 +56,15 @@ class SourceVersion(Contract):
         )
 
 
-class CitationSpan(Contract):
-    """A half-open Unicode code point range within the stored section text."""
-
+class CitationSpan(TextSpan):
     source_version_id: UUID
     section_id: UUID
-    start: Annotated[int, Field(strict=True, ge=0)]
-    end: Annotated[int, Field(strict=True, gt=0)]
-    quote: str
-
-    @model_validator(mode="after")
-    def validate_quote_length(self) -> Self:
-        if not self.quote.strip() or len(self.quote) != self.end - self.start:
-            raise ValueError("quote must be nonblank and exactly match the span length")
-        return self
 
     def matches(self, section: SourceSection) -> bool:
         return (
             self.source_version_id == section.source_version_id
             and self.section_id == section.id
-            and self.end <= len(section.text)
-            and self.quote == section.text[self.start : self.end]
+            and self.matches_text(section.text)
         )
 
 
