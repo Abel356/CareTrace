@@ -5,6 +5,7 @@ requires-python = "==3.13.*"
 [manifest]
 members = [
     "caretrace-api",
+    "caretrace-contracts",
     "caretrace-workspace",
 ]
 
@@ -99,6 +100,17 @@ requires-dist = [
     { name = "pydantic-settings", specifier = ">=2.12,<3" },
     { name = "uvicorn", specifier = ">=0.39,<1" },
 ]
+
+[[package]]
+name = "caretrace-contracts"
+version = "0.1.0"
+source = { editable = "packages/contracts" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", specifier = ">=2.12,<3" }]
 
 [[package]]
 name = "caretrace-workspace"

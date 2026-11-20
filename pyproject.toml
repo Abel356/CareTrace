@@ -19,7 +19,7 @@ package = false
 required-version = ">=0.13.9,<0.14"
 
 [tool.uv.workspace]
-members = ["apps/api"]
+members = ["apps/api", "packages/contracts"]
 
 [tool.ruff]
 target-version = "py313"
@@ -33,4 +33,4 @@ python_version = "3.13"
 strict = true
 
 [tool.pytest.ini_options]
-testpaths = ["apps/api/tests"]
+testpaths = ["apps/api/tests", "packages/contracts/tests"]
