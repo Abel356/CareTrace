@@ -1,12 +1,14 @@
 from collections.abc import Iterator
 from datetime import date
 from hashlib import sha256
+from typing import Literal
 
 import pytest
 from caretrace_api import synthetic_ipac
 from caretrace_api.main import create_app
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
+from pydantic import SecretStr
 
 PATH = "/api/v1/synthetic/ipac/citations"
 
@@ -101,3 +103,25 @@ def test_lookup_abstains_if_a_second_version_could_apply(
     response = client.get(PATH, params={"q": "green", "as_of": "2026-06-01"})
     assert response.status_code == 200
     assert response.json() == {"status": "insufficient_evidence"}
+
+
+@pytest.mark.parametrize(
+    ("environment", "enabled", "expected"),
+    [
+        ("development", False, 404),
+        ("development", True, 200),
+        ("production", True, 404),
+    ],
+)
+def test_lookup_requires_explicit_local_activation(
+    environment: Literal["development", "production"], enabled: bool, expected: int
+) -> None:
+    settings = Settings(
+        environment=environment,
+        enable_synthetic_ipac=enabled,
+        allowed_hosts=("localhost",),
+        database_url=SecretStr("postgresql+psycopg://db.example.test/caretrace"),
+    )
+    with TestClient(create_app(settings), base_url="http://localhost") as client:
+        response = client.get(PATH, params={"q": "checklist", "as_of": "2026-06-01"})
+        assert response.status_code == expected
