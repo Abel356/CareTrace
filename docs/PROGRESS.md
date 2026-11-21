@@ -1,5 +1,37 @@
 # Progress
 
+## November 21, 2026
+
+- Shipped `GET /api/v1/synthetic/ipac/citations` as an opt-in development and test endpoint.
+  The read-only search resolves the two fictional revisions at the June 1 changeover and
+  returns exact paragraph spans with source and version metadata. Missing matches and
+  uncertain or overlapping effective intervals return `insufficient_evidence`.
+- Verified 15 endpoint cases, including both version windows, the shared boundary, Unicode
+  offsets, checksum, provenance, abstention, production exclusion, and HTTP behavior.
+- Local verification passed 75 Python tests and seven web tests, Ruff, mypy, ESLint,
+  Prettier, Python packaging, the Next.js production build, all pre-commit hooks, and
+  TypeScript contract drift detection. The live PostgreSQL test was skipped locally.
+  GitHub Actions passed 76 Python tests with PostgreSQL 17/pgvector and the web and API
+  contract job. The existing TestClient deprecation warning appeared in both Python runs.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/44933546508)
+
+### Checkpoints
+
+1. `9a9a9fa` resolves exactly one known effective version.
+2. `d40fff0` extracts exact spans for keyword-matching paragraphs.
+3. `cc10ca3` gives the fictional Ontario source a stable identity.
+4. `de87918` binds revision metadata and SHA-256 checksums to fixture text.
+5. `602ee63` adds two nonoverlapping revisions with a shared boundary.
+6. `4c6a0fb` models the cited passages and their provenance.
+7. `1793142` assembles cited matches and explicit abstention results.
+8. `af741e9` gates the HTTP route and generates its TypeScript contract.
+9. `426be91` exercises both version windows and the exact changeover date.
+10. `1111e88` verifies provenance, digest, and Unicode citation offsets.
+11. `8f88eab` covers absent, uncertain, and overlapping evidence.
+12. `6ec643a` verifies development opt-in and production exclusion.
+13. `412210f` verifies the read-only method and standard validation error.
+14. This handoff records verification and the November 22 plan.
+
 ## November 20, 2026
 
 - Established safe ignore rules, pinned the Python and JavaScript workspace tooling,
