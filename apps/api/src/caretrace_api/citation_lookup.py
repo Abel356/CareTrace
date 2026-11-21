@@ -27,6 +27,15 @@ class CitationMatch(Contract):
     passages: Annotated[tuple[CitedPassage, ...], Field(min_length=1)]
 
 
+class InsufficientEvidence(Contract):
+    status: Literal["insufficient_evidence"]
+
+
+type CitationLookup = Annotated[
+    CitationMatch | InsufficientEvidence, Field(discriminator="status")
+]
+
+
 def resolve_version(
     versions: Iterable[SourceVersion], as_of: date
 ) -> SourceVersion | None:

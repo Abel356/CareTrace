@@ -11,6 +11,15 @@ from caretrace_contracts.sources import (
 )
 from pydantic import HttpUrl
 
+from caretrace_api.citation_lookup import (
+    CitationLookup,
+    CitationMatch,
+    CitedPassage,
+    InsufficientEvidence,
+    matching_spans,
+    resolve_version,
+)
+
 _DOCUMENT_URL = "https://caretrace.invalid/synthetic/ipac"
 DOCUMENT = SourceDocument(
     id=uuid5(NAMESPACE_URL, _DOCUMENT_URL),
@@ -62,3 +71,28 @@ REVISIONS = (
         _HEADER + "File the café station checklist in the green binder.",
     ),
 )
+
+
+def lookup(query: str, as_of: date) -> CitationLookup:
+    version = resolve_version((version for version, _ in REVISIONS), as_of)
+    if version is None:
+        return InsufficientEvidence(status="insufficient_evidence")
+
+    section = next(
+        section for _, section in REVISIONS if section.source_version_id == version.id
+    )
+    spans = matching_spans(section, query)
+    if not spans:
+        return InsufficientEvidence(status="insufficient_evidence")
+
+    return CitationMatch(
+        status="matched",
+        document=DOCUMENT,
+        version=version,
+        passages=tuple(
+            CitedPassage(
+                locator=section.locator, citation_url=section.citation_url, span=span
+            )
+            for span in spans
+        ),
+    )
