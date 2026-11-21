@@ -1,7 +1,9 @@
 from collections.abc import Iterator
+from datetime import date
 from hashlib import sha256
 
 import pytest
+from caretrace_api import synthetic_ipac
 from caretrace_api.main import create_app
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
@@ -66,3 +68,36 @@ def test_lookup_returns_verifiable_provenance_and_unicode_offsets(
     assert span["source_version_id"] == version["id"]
     assert (span["start"], span["end"]) == (len(prefix), len(original))
     assert span["quote"] == original[span["start"] : span["end"]]
+
+
+@pytest.mark.parametrize(
+    ("query", "as_of"),
+    [
+        ("unlisted", "2026-06-01"),
+        ("  ", "2026-06-01"),
+        ("checklist", "2025-12-31"),
+    ],
+)
+def test_lookup_abstains_without_an_effective_matching_passage(
+    client: TestClient, query: str, as_of: str
+) -> None:
+    response = client.get(PATH, params={"q": query, "as_of": as_of})
+    assert response.status_code == 200
+    assert response.json() == {"status": "insufficient_evidence"}
+
+
+@pytest.mark.parametrize(
+    "prior_start", [None, date(2026, 1, 1)], ids=["uncertain", "overlap"]
+)
+def test_lookup_abstains_if_a_second_version_could_apply(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, prior_start: date | None
+) -> None:
+    (prior, section), current = synthetic_ipac.REVISIONS
+    conflicting = prior.model_copy(
+        update={"effective_from": prior_start, "effective_until": None}
+    )
+    monkeypatch.setattr(synthetic_ipac, "REVISIONS", ((conflicting, section), current))
+
+    response = client.get(PATH, params={"q": "green", "as_of": "2026-06-01"})
+    assert response.status_code == 200
+    assert response.json() == {"status": "insufficient_evidence"}
