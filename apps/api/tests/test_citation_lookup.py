@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from hashlib import sha256
 
 import pytest
 from caretrace_api.main import create_app
@@ -35,3 +36,33 @@ def test_lookup_uses_the_version_effective_on_the_selected_date(
     assert [item["span"]["quote"] for item in body["passages"]] == [
         f"File the café station checklist in the {binder} binder."
     ]
+
+
+def test_lookup_returns_verifiable_provenance_and_unicode_offsets(
+    client: TestClient,
+) -> None:
+    response = client.get(PATH, params={"q": "checklist", "as_of": "2026-05-31"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["corpus"] == "synthetic_ipac"
+    document, version = body["document"], body["version"]
+    assert document["title"] == "Synthetic IPAC training drill"
+    assert document["jurisdiction"] == "CA-ON"
+    assert document["source_url"] == "https://caretrace.invalid/synthetic/ipac"
+    assert version["document_id"] == document["id"]
+    assert version["retrieved_at"] == "2026-11-21T00:00:00Z"
+    assert (version["effective_from"], version["effective_until"]) == (
+        "2026-01-01",
+        "2026-06-01",
+    )
+
+    prefix = "Drill notes 🧼\n\n"
+    original = prefix + "File the café station checklist in the blue binder."
+    assert version["original_sha256"] == sha256(original.encode("utf-8")).hexdigest()
+    (passage,) = body["passages"]
+    assert passage["locator"] == "Drill records"
+    assert passage["citation_url"] == f"{version['version_url']}#drill-records"
+    span = passage["span"]
+    assert span["source_version_id"] == version["id"]
+    assert (span["start"], span["end"]) == (len(prefix), len(original))
+    assert span["quote"] == original[span["start"] : span["end"]]
