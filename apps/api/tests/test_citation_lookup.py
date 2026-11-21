@@ -125,3 +125,16 @@ def test_lookup_requires_explicit_local_activation(
     with TestClient(create_app(settings), base_url="http://localhost") as client:
         response = client.get(PATH, params={"q": "checklist", "as_of": "2026-06-01"})
         assert response.status_code == expected
+
+
+def test_lookup_uses_the_standard_validation_error(client: TestClient) -> None:
+    response = client.get(PATH, params={"q": "checklist", "as_of": "invalid-date"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "error": {"code": "invalid_request", "message": "Request validation failed"},
+        "request_id": response.headers["X-Request-ID"],
+    }
+
+
+def test_lookup_is_read_only(client: TestClient) -> None:
+    assert client.post(PATH).status_code == 405
