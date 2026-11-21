@@ -44,3 +44,21 @@ def _revision(
         citation_url=HttpUrl(citation_url),
         text=text,
     )
+
+
+_CHANGEOVER = date(2026, 6, 1)
+_HEADER = "Drill notes 🧼\n\n"
+REVISIONS = (
+    _revision(
+        "v1",
+        date(2026, 1, 1),
+        _CHANGEOVER,
+        _HEADER + "File the café station checklist in the blue binder.",
+    ),
+    _revision(
+        "v2",
+        _CHANGEOVER,
+        None,
+        _HEADER + "File the café station checklist in the green binder.",
+    ),
+)
