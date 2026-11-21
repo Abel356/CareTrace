@@ -9,6 +9,7 @@ from caretrace_api.settings import Settings
 def export_openapi(destination: Path) -> None:
     settings = Settings(
         environment="test",
+        enable_synthetic_ipac=True,
         allowed_hosts=("localhost",),
         allowed_origins=(),
         max_request_bytes=1_048_576,

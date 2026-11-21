@@ -1,15 +1,17 @@
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
+from datetime import date
 from importlib.metadata import version
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, FastAPI, Response
+from fastapi import APIRouter, FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from caretrace_api.citation_lookup import CitationLookup
 from caretrace_api.database import Database
-from caretrace_api.errors import register_error_handlers
+from caretrace_api.errors import ErrorEnvelope, register_error_handlers
 from caretrace_api.middleware import RequestBoundaryMiddleware, RequestContextMiddleware
 from caretrace_api.settings import Settings
 
@@ -94,6 +96,22 @@ def create_app(
     @router.get("/build")
     def build_information() -> BuildInformation:
         return BuildInformation(version=app.version)
+
+    if settings.enable_synthetic_ipac and settings.environment in {
+        "development",
+        "test",
+    }:
+        from caretrace_api.synthetic_ipac import lookup
+
+        @router.get(
+            "/synthetic/ipac/citations",
+            responses={422: {"model": ErrorEnvelope}},
+            summary="Look up citations in the synthetic IPAC corpus",
+        )
+        def synthetic_ipac_citations(
+            q: Annotated[str, Query(min_length=1, max_length=200)], as_of: date
+        ) -> CitationLookup:
+            return lookup(q, as_of)
 
     app.include_router(router)
     return app

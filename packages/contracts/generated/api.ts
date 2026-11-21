@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/synthetic/ipac/citations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Look up citations in the synthetic IPAC corpus */
+        get: operations["synthetic_ipac_citations_api_v1_synthetic_ipac_citations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/livez": {
         parameters: {
             query?: never;
@@ -70,6 +87,77 @@ export interface components {
             /** Version */
             version: string;
         };
+        CitationLookup: components["schemas"]["CitationMatch"] | components["schemas"]["InsufficientEvidence"];
+        /** CitationMatch */
+        CitationMatch: {
+            /**
+             * Corpus
+             * @default synthetic_ipac
+             * @constant
+             */
+            corpus: "synthetic_ipac";
+            document: components["schemas"]["SourceDocument"];
+            /** Passages */
+            passages: components["schemas"]["CitedPassage"][];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "matched";
+            version: components["schemas"]["SourceVersion"];
+        };
+        /** CitationSpan */
+        CitationSpan: {
+            /** End */
+            end: number;
+            /** Quote */
+            quote: string;
+            /**
+             * Section Id
+             * Format: uuid
+             */
+            section_id: string;
+            /**
+             * Source Version Id
+             * Format: uuid
+             */
+            source_version_id: string;
+            /** Start */
+            start: number;
+        };
+        /** CitedPassage */
+        CitedPassage: {
+            citation_url: components["schemas"]["SourceUrl"];
+            locator: components["schemas"]["Label"];
+            span: components["schemas"]["CitationSpan"];
+        };
+        /** ErrorDetail */
+        ErrorDetail: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+        };
+        /** ErrorEnvelope */
+        ErrorEnvelope: {
+            error: components["schemas"]["ErrorDetail"];
+            /** Request Id */
+            request_id: string;
+        };
+        /** InsufficientEvidence */
+        InsufficientEvidence: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "insufficient_evidence";
+        };
+        /**
+         * Jurisdiction
+         * @enum {string}
+         */
+        Jurisdiction: "CA-ON";
+        Label: string;
         /** Liveness */
         Liveness: {
             /**
@@ -86,6 +174,51 @@ export interface components {
              * @enum {string}
              */
             status: "ready" | "unavailable";
+        };
+        Sha256: string;
+        /** SourceDocument */
+        SourceDocument: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            jurisdiction: components["schemas"]["Jurisdiction"];
+            kind: components["schemas"]["SourceKind"];
+            source_url: components["schemas"]["SourceUrl"];
+            title: components["schemas"]["Label"];
+        };
+        /**
+         * SourceKind
+         * @enum {string}
+         */
+        SourceKind: "statute" | "regulation" | "inspection_report";
+        /** Format: uri */
+        SourceUrl: string;
+        /** SourceVersion */
+        SourceVersion: {
+            /**
+             * Document Id
+             * Format: uuid
+             */
+            document_id: string;
+            /** Effective From */
+            effective_from?: string | null;
+            /** Effective Until */
+            effective_until?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            original_sha256: components["schemas"]["Sha256"];
+            /**
+             * Retrieved At
+             * Format: date-time
+             */
+            retrieved_at: string;
+            version: components["schemas"]["Label"];
+            version_url: components["schemas"]["SourceUrl"];
         };
     };
     responses: never;
@@ -112,6 +245,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BuildInformation"];
+                };
+            };
+        };
+    };
+    synthetic_ipac_citations_api_v1_synthetic_ipac_citations_get: {
+        parameters: {
+            query: {
+                q: string;
+                as_of: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CitationLookup"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
         };

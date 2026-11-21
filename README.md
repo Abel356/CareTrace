@@ -41,6 +41,13 @@ The API exposes `/livez` for process liveness, `/readyz` for service readiness, 
 `/api/v1/build` for the installed API version. Local development can run without a
 database. When a database URL is configured, readiness also checks database connectivity.
 
+To enable the fictional IPAC citation demo, set `CARETRACE_ENABLE_SYNTHETIC_IPAC=true`
+in the local `.env` file. In development or test, call
+`GET /api/v1/synthetic/ipac/citations?q=checklist&as_of=2026-06-01`.
+The demo uses a case-insensitive substring search within each passage. Citation offsets
+are half-open Unicode code point ranges within the stored section, and the effective
+end date is exclusive. Fixture URLs use the reserved `.invalid` domain.
+
 See `.env.example` for the request-size limit and explicit host and browser-origin
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
 carry a server-generated request ID, which also appears in the structured request log.
