@@ -1,8 +1,30 @@
 import re
 from collections.abc import Iterable
 from datetime import date
+from typing import Annotated, Literal
 
-from caretrace_contracts.sources import CitationSpan, SourceSection, SourceVersion
+from caretrace_contracts.common import Contract, Label, SourceUrl
+from caretrace_contracts.sources import (
+    CitationSpan,
+    SourceDocument,
+    SourceSection,
+    SourceVersion,
+)
+from pydantic import Field
+
+
+class CitedPassage(Contract):
+    locator: Label
+    citation_url: SourceUrl
+    span: CitationSpan
+
+
+class CitationMatch(Contract):
+    status: Literal["matched"]
+    corpus: Literal["synthetic_ipac"] = "synthetic_ipac"
+    document: SourceDocument
+    version: SourceVersion
+    passages: Annotated[tuple[CitedPassage, ...], Field(min_length=1)]
 
 
 def resolve_version(
