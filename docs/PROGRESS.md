@@ -1,5 +1,45 @@
 # Progress
 
+## November 22, 2026
+
+- Retained the first public IPAC snapshot, O. Reg. 246/22 (General), v28, s. 102 (3).
+  Ontario e-Laws lists June 27 through June 30, 2025, inclusive. The preceding version
+  ends June 26 and the following version starts July 1. The manifest records the
+  canonical and version URLs, Ontario jurisdiction, UTC retrieval time, SHA-256,
+  and a half-open Unicode span within the subsection.
+  [Previous version](https://www.ontario.ca/laws/regulation/220246/v27)
+  [Retained citation](https://www.ontario.ca/laws/regulation/220246/v28#BK129)
+  [Following version](https://www.ontario.ca/laws/regulation/220246/v29)
+- Fetched the three official version pages with `curl`. A Python extraction decoded HTML
+  entities and removed tags and outer layout whitespace from the v28 historical notice
+  and the subsection paragraph under `BK129`. `source.txt` holds those two blocks,
+  separated by a blank line and encoded as UTF-8 with LF. The SHA-256 covers that exact
+  excerpt file. The adjacent notice credits the King's Printer and identifies the reproduction.
+- The offline command verified the real fixture. Five tests covered the real citation and
+  both date boundaries, altered bytes, shifted offsets, and inaccurate or missing effective
+  dates. The secret scanner allowed only the exact known public digest after flagging it.
+- Local verification passed 80 Python tests and seven web tests, Ruff, mypy, ESLint,
+  Prettier, contract drift, all pre-commit hooks, and Python and Next.js production builds.
+  GitHub Actions passed 81 Python tests including the live PostgreSQL 17/pgvector test,
+  which was skipped locally, and the web and API contract job. The existing TestClient
+  deprecation warning appeared in both Python runs. No task blocker remains.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/45045775046)
+
+### Checkpoints
+
+Ten commits cover the task and handoff.
+
+1. `9126bd3` reads a closed e-Laws historical period.
+2. `77dc6f6` verifies retained bytes and the effective interval.
+3. `d58111c` validates provenance and exact citation spans.
+4. `aff2063` exposes the offline verification command.
+5. `ee7db76` allowlists the exact public digest in the secret scanner.
+6. `f601ddc` retains the attributed snapshot and provenance manifest.
+7. `0cebcad` tests the retained citation and version boundaries.
+8. `2cd7256` tests checksum rejection.
+9. `27046df` tests citation and effective-date rejection.
+10. This handoff records verification and the November 23 plan.
+
 ## November 21, 2026
 
 - Shipped `GET /api/v1/synthetic/ipac/citations` as an opt-in development and test endpoint.

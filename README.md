@@ -48,6 +48,14 @@ The demo uses a case-insensitive substring search within each passage. Citation 
 are half-open Unicode code point ranges within the stored section, and the effective
 end date is exclusive. Fixture URLs use the reserved `.invalid` domain.
 
+Verify the retained Ontario e-Laws IPAC excerpt from the repository root after setup.
+
+```sh
+uv run --locked --offline python -m caretrace_api.public_snapshot corpus/ontario/220246/v28
+```
+
+The command checks the retained UTF-8 bytes, historical period, and exact citation span.
+
 See `.env.example` for the request-size limit and explicit host and browser-origin
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
 carry a server-generated request ID, which also appears in the structured request log.

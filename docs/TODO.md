@@ -1,16 +1,13 @@
-# November 22, 2026
+# November 23, 2026
 
-## Curate and verify the first public Ontario IPAC source snapshot
+## Serve date-scoped citations from the verified Ontario snapshot
 
-Select one Ontario long-term-care IPAC provision from Ontario e-Laws. Verify the provision
-and its effective interval against the official version pages. Retain an eligible public
-source snapshot with the title, jurisdiction, section locator, canonical and version URLs,
-retrieval time, effective interval, and SHA-256 checksum of the retained source bytes.
+Add one opt-in, read-only public IPAC citation route for development and test. Reuse the
+offline snapshot validation and the existing source, citation, and abstention contracts.
+Return the exact subsection span and version provenance for a matching query from June 27
+through June 30, 2025. Return `insufficient_evidence` for a missing match, an unsupported
+date, or unavailable or invalid source evidence.
 
-Use the existing source contracts to record one exact passage and its section-relative
-Unicode offsets. Add an offline verification command that checks the saved bytes, passage,
-and effective interval and fails on a changed checksum, a mismatched span, or an
-unverified effective date.
-
-Verify the saved snapshot and rejection cases with the relevant Python lint, type, and
-test checks. Commit at the repository's 10-line checkpoints and push each.
+Verify the HTTP match, both date boundaries, a missing match, an invalid snapshot, and
+production exclusion. Run Python tests, strict typing, lint, and API contract drift checks.
+Commit and push at the repository's 10-line checkpoints.
