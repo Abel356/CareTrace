@@ -1,3 +1,4 @@
+import argparse
 import re
 from datetime import date, timedelta
 from hashlib import sha256
@@ -77,3 +78,24 @@ def verify_snapshot(directory: Path) -> SnapshotManifest:
             "snapshot citation does not match the section text or identifiers"
         )
     return manifest
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Verify a retained public source snapshot"
+    )
+    parser.add_argument(
+        "directory", type=Path, help="directory with the source and manifest"
+    )
+    args = parser.parse_args()
+    try:
+        manifest = verify_snapshot(args.directory)
+    except (OSError, ValueError) as error:
+        parser.error(str(error))
+    print(
+        f"Verified {manifest.document.title}, {manifest.locator} ({manifest.version.version})."
+    )
+
+
+if __name__ == "__main__":
+    main()
