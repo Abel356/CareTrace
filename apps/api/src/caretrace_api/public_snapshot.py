@@ -2,8 +2,15 @@ import re
 from datetime import date, timedelta
 from hashlib import sha256
 from pathlib import Path
+from uuid import UUID
 
-from caretrace_contracts.sources import SourceVersion
+from caretrace_contracts.common import Contract, Label, SourceUrl
+from caretrace_contracts.sources import (
+    CitationSpan,
+    SourceDocument,
+    SourceSection,
+    SourceVersion,
+)
 
 _MONTHS = "January February March April May June July August September October November December".split()
 _DATE = r"([A-Z][a-z]+) ([1-9][0-9]?), ([0-9]{4})"
@@ -37,3 +44,36 @@ def read_snapshot_text(source: Path, version: SourceVersion) -> str:
             "snapshot effective interval does not match the historical period"
         )
     return section.removesuffix("\n")
+
+
+class SnapshotManifest(Contract):
+    document: SourceDocument
+    version: SourceVersion
+    section_id: UUID
+    locator: Label
+    citation_url: SourceUrl
+    citation: CitationSpan
+
+
+def verify_snapshot(directory: Path) -> SnapshotManifest:
+    manifest = SnapshotManifest.model_validate_json(
+        (directory / "manifest.json").read_bytes()
+    )
+    if manifest.version.document_id != manifest.document.id:
+        raise ValueError("snapshot version refers to a different document")
+    if str(manifest.citation_url).partition("#")[0] != str(
+        manifest.version.version_url
+    ):
+        raise ValueError("snapshot citation URL refers to a different version")
+    section = SourceSection(
+        id=manifest.section_id,
+        source_version_id=manifest.version.id,
+        locator=manifest.locator,
+        citation_url=manifest.citation_url,
+        text=read_snapshot_text(directory / "source.txt", manifest.version),
+    )
+    if not manifest.citation.matches(section):
+        raise ValueError(
+            "snapshot citation does not match the section text or identifiers"
+        )
+    return manifest
