@@ -2,12 +2,14 @@ from collections.abc import Iterator
 from hashlib import sha256
 from pathlib import Path
 from shutil import copytree
+from typing import Literal
 
 import pytest
 from caretrace_api import public_ipac
 from caretrace_api.main import create_app
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
+from pydantic import SecretStr
 
 PATH = "/api/v1/public/ipac/citations"
 SNAPSHOT = Path(__file__).resolve().parents[3] / "corpus/ontario/220246/v28"
@@ -68,6 +70,39 @@ def test_public_lookup_abstains_outside_the_verified_quote_and_dates(
     response = client.get(PATH, params={"q": query, "as_of": as_of})
     assert response.status_code == 200
     assert response.json() == {"status": "insufficient_evidence"}
+
+
+@pytest.mark.parametrize(
+    ("environment", "enabled", "expected"),
+    [
+        ("development", False, 404),
+        ("development", True, 200),
+        ("production", True, 404),
+    ],
+)
+def test_public_lookup_requires_local_opt_in(
+    environment: Literal["development", "production"], enabled: bool, expected: int
+) -> None:
+    settings = Settings(
+        environment=environment,
+        enable_public_ipac=enabled,
+        enable_synthetic_ipac=True,
+        allowed_hosts=("localhost",),
+        database_url=SecretStr("postgresql+psycopg://db.example.test/caretrace"),
+    )
+    with TestClient(create_app(settings), base_url="http://localhost") as client:
+        response = client.get(PATH, params={"q": "protocols", "as_of": "2025-06-27"})
+        assert response.status_code == expected
+
+
+def test_public_lookup_rejects_writes_and_invalid_dates(client: TestClient) -> None:
+    assert client.post(PATH).status_code == 405
+    response = client.get(PATH, params={"q": "protocols", "as_of": "invalid-date"})
+    assert response.status_code == 422
+    assert response.json() == {
+        "error": {"code": "invalid_request", "message": "Request validation failed"},
+        "request_id": response.headers["X-Request-ID"],
+    }
 
 
 @pytest.mark.parametrize("missing", [True, False], ids=["missing", "changed"])
