@@ -1,13 +1,13 @@
-# November 23, 2026
+# November 24, 2026
 
-## Serve date-scoped citations from the verified Ontario snapshot
+## Display verified public IPAC citations in the local web workspace
 
-Add one opt-in, read-only public IPAC citation route for development and test. Reuse the
-offline snapshot validation and the existing source, citation, and abstention contracts.
-Return the exact subsection span and version provenance for a matching query from June 27
-through June 30, 2025. Return `insufficient_evidence` for a missing match, an unsupported
-date, or unavailable or invalid source evidence.
+Add an opt-in, read-only citation panel with a query field and an as-of date. Use the existing
+server-side API origin and generated contract for `GET /api/v1/public/ipac/citations`. Show
+the exact quote, subsection link, jurisdiction, version, and effective dates for a match.
+Show an insufficient-evidence state for abstention and a separate unavailable state for API
+failures. Keep the panel local to development and test.
 
-Verify the HTTP match, both date boundaries, a missing match, an invalid snapshot, and
-production exclusion. Run Python tests, strict typing, lint, and API contract drift checks.
-Commit and push at the repository's 10-line checkpoints.
+Verify a June 27, 2025 match against the running API, an out-of-range date, an unavailable
+API, and production exclusion. Run the web tests, lint, typecheck, production build, and
+API contract drift check. Commit and push at the repository's 10-line checkpoints.

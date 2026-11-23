@@ -1,5 +1,37 @@
 # Progress
 
+## November 23, 2026
+
+- Shipped `GET /api/v1/public/ipac/citations` behind `CARETRACE_ENABLE_PUBLIC_IPAC`
+  in development and test. Each lookup validates the retained bytes, effective interval,
+  and exact quote before returning O. Reg. 246/22 v28, s. 102 (3), with source provenance.
+  The endpoint matches queries within the verified span and abstains for missing matches,
+  dates outside June 27–30, 2025, or unavailable or invalid evidence.
+  [Ontario e-Laws v28](https://www.ontario.ca/laws/regulation/220246/v28#BK129)
+- Thirteen HTTP cases covered provenance, offsets, both date boundaries, mismatches,
+  missing and tampered snapshots, local activation, production exclusion, method limits,
+  and the standard validation response. The offline verification command passed.
+- Local checks passed 93 Python tests, seven web tests, Ruff, mypy, ESLint, Prettier,
+  all repository hooks, Python and Next.js builds, and TypeScript contract drift.
+  GitHub Actions passed 94 Python tests, including the live PostgreSQL 17/pgvector
+  check skipped locally, and the web and API contract job. The existing TestClient
+  deprecation warning persists. No task blocker remains.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/45217304039)
+
+### Checkpoints
+
+Nine commits cover the task and handoff.
+
+1. `9ca1fed` defines the public citation response contract.
+2. `548cb84` returns only verified, date-matched spans.
+3. `d8e5e93` adds the opt-in local HTTP route.
+4. `b151eec` verifies exact citations at both date boundaries.
+5. `d334286` verifies abstention for unsupported dates and evidence.
+6. `ee9ac43` verifies local activation and read-only behavior.
+7. `d897a89` exports the public route and documents activation.
+8. `b0a719e` regenerates the OpenAPI TypeScript types with `pnpm run contracts:generate`.
+9. This handoff records verification and the November 24 plan.
+
 ## November 22, 2026
 
 - Retained the first public IPAC snapshot, O. Reg. 246/22 (General), v28, s. 102 (3).
