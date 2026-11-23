@@ -1,8 +1,10 @@
 from collections.abc import Iterator
 from hashlib import sha256
 from pathlib import Path
+from shutil import copytree
 
 import pytest
+from caretrace_api import public_ipac
 from caretrace_api.main import create_app
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
@@ -48,3 +50,36 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     assert (span["start"], span["end"]) == (4, 143)
     assert span["quote"] == section[span["start"] : span["end"]]
     assert span["source_version_id"] == version["id"]
+
+
+@pytest.mark.parametrize(
+    ("query", "as_of"),
+    [
+        ("protocols", "2025-06-26"),
+        ("protocols", "2025-07-01"),
+        ("unlisted", "2025-06-27"),
+        ("Historical version", "2025-06-27"),
+        ("  ", "2025-06-27"),
+    ],
+)
+def test_public_lookup_abstains_outside_the_verified_quote_and_dates(
+    client: TestClient, query: str, as_of: str
+) -> None:
+    response = client.get(PATH, params={"q": query, "as_of": as_of})
+    assert response.status_code == 200
+    assert response.json() == {"status": "insufficient_evidence"}
+
+
+@pytest.mark.parametrize("missing", [True, False], ids=["missing", "changed"])
+def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
+    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, missing: bool
+) -> None:
+    if not missing:
+        copytree(SNAPSHOT, tmp_path, dirs_exist_ok=True)
+        source = tmp_path / "source.txt"
+        source.write_bytes(source.read_bytes() + b"\n")
+    monkeypatch.setattr(public_ipac, "_SNAPSHOT", tmp_path)
+
+    response = client.get(PATH, params={"q": "protocols", "as_of": "2025-06-27"})
+    assert response.status_code == 200
+    assert response.json() == {"status": "insufficient_evidence"}
