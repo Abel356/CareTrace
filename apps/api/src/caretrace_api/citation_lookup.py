@@ -19,12 +19,19 @@ class CitedPassage(Contract):
     span: CitationSpan
 
 
-class CitationMatch(Contract):
+class CitedResult(Contract):
     status: Literal["matched"]
-    corpus: Literal["synthetic_ipac"] = "synthetic_ipac"
     document: SourceDocument
     version: SourceVersion
     passages: Annotated[tuple[CitedPassage, ...], Field(min_length=1)]
+
+
+class CitationMatch(CitedResult):
+    corpus: Literal["synthetic_ipac"] = "synthetic_ipac"
+
+
+class PublicCitationMatch(CitedResult):
+    corpus: Literal["public_ipac"] = "public_ipac"
 
 
 class InsufficientEvidence(Contract):
@@ -33,6 +40,9 @@ class InsufficientEvidence(Contract):
 
 type CitationLookup = Annotated[
     CitationMatch | InsufficientEvidence, Field(discriminator="status")
+]
+type PublicCitationLookup = Annotated[
+    PublicCitationMatch | InsufficientEvidence, Field(discriminator="status")
 ]
 
 
