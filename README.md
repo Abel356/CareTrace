@@ -56,6 +56,14 @@ uv run --locked --offline python -m caretrace_api.public_snapshot corpus/ontario
 
 The command checks the retained UTF-8 bytes, historical period, and exact citation span.
 
+To query this snapshot from a local checkout, set `CARETRACE_ENABLE_PUBLIC_IPAC=true`
+in `.env` and run the API in development or test. Try
+`GET /api/v1/public/ipac/citations?q=protocols&as_of=2025-06-27`.
+The lookup checks a case-insensitive substring within the verified citation and returns
+the exact span and source provenance for June 27 through June 30, 2025, inclusive.
+Other dates, unmatched queries, or unavailable or invalid snapshots return
+`insufficient_evidence`. The route is disabled in production.
+
 See `.env.example` for the request-size limit and explicit host and browser-origin
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
 carry a server-generated request ID, which also appears in the structured request log.
