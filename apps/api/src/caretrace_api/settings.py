@@ -21,6 +21,7 @@ class Settings(BaseSettings):
 
     environment: Literal["development", "test", "production"] = "development"
     enable_synthetic_ipac: bool = False
+    enable_public_ipac: bool = False
     allowed_hosts: tuple[str, ...] = ("localhost", "127.0.0.1")
     allowed_origins: tuple[str, ...] = ()
     max_request_bytes: int = Field(default=1_048_576, gt=0, le=16_777_216)

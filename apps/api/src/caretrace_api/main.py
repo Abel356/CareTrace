@@ -9,7 +9,7 @@ from fastapi import APIRouter, FastAPI, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from caretrace_api.citation_lookup import CitationLookup
+from caretrace_api.citation_lookup import CitationLookup, PublicCitationLookup
 from caretrace_api.database import Database
 from caretrace_api.errors import ErrorEnvelope, register_error_handlers
 from caretrace_api.middleware import RequestBoundaryMiddleware, RequestContextMiddleware
@@ -112,6 +112,19 @@ def create_app(
             q: Annotated[str, Query(min_length=1, max_length=200)], as_of: date
         ) -> CitationLookup:
             return lookup(q, as_of)
+
+    if settings.enable_public_ipac and settings.environment in {"development", "test"}:
+        from caretrace_api.public_ipac import lookup as lookup_public_ipac
+
+        @router.get(
+            "/public/ipac/citations",
+            responses={422: {"model": ErrorEnvelope}},
+            summary="Look up citations in the verified public IPAC snapshot",
+        )
+        def public_ipac_citations(
+            q: Annotated[str, Query(min_length=1, max_length=200)], as_of: date
+        ) -> PublicCitationLookup:
+            return lookup_public_ipac(q, as_of)
 
     app.include_router(router)
     return app
