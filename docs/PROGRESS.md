@@ -1,5 +1,45 @@
 # Progress
 
+## November 24, 2026
+
+- Shipped an opt-in public IPAC citation panel for local development and test.
+  The workspace uses the server-side API origin and generated contract to look
+  up a query as of a selected date. A match shows the exact excerpt, subsection
+  link, jurisdiction, version, and effective interval.
+- Live loopback checks against Next.js and FastAPI returned the retained quote
+  and link for `protocols` on June 27, 2025, insufficient evidence on July 1,
+  and a distinct unavailable message after the API stopped. The running
+  production build excluded the panel and its link with the flag enabled.
+- All 13 local web tests passed, along with ESLint, Prettier, TypeScript,
+  the Next.js production build, the snapshot verifier, and OpenAPI contract
+  drift detection. The rendered panel passed the automated accessibility check.
+  Browser interaction was unavailable because the Windows browser tool could
+  not enforce URL policy in Firefox.
+- Windows Application Control blocked the installed Git hook interpreter and
+  some native Python modules. Staged whitespace, private-key, secret, and
+  relevant web checks ran directly. An alternate local Python runtime ran
+  the API and snapshot verifier. Its full suite reported 86 passes, seven
+  failures loading the PostgreSQL driver, and one live-database skip.
+  GitHub Actions passed all 94 Python tests, including live PostgreSQL with
+  pgvector, and all 13 web tests, builds, lint, typing, and contract drift.
+  The existing TestClient deprecation warning remains.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/45455287068)
+
+### Checkpoints
+
+Ten commits cover the task and handoff.
+
+1. `9748f30` shares the server-side API request settings with readiness.
+2. `a8356e4` fetches public citations using the generated contract.
+3. `771c205` renders the exact quote, provenance, and distinct result states.
+4. `95c4198` adds the query and as-of date form.
+5. `92d46fb` enables the panel only in opted-in development and test runs.
+6. `348806d` makes form controls and quotes readable at narrow widths.
+7. `061ae21` verifies exact citation provenance and panel accessibility.
+8. `3e5df4f` verifies evidence abstention and unavailable responses.
+9. `cd5e919` verifies opt-out and production exclusion.
+10. This handoff documents activation, verification, and the November 25 plan.
+
 ## November 23, 2026
 
 - Shipped `GET /api/v1/public/ipac/citations` behind `CARETRACE_ENABLE_PUBLIC_IPAC`

@@ -1,13 +1,14 @@
-# November 24, 2026
+# November 25, 2026
 
-## Display verified public IPAC citations in the local web workspace
+## Add a second verified passage to the historical IPAC lookup
 
-Add an opt-in, read-only citation panel with a query field and an as-of date. Use the existing
-server-side API origin and generated contract for `GET /api/v1/public/ipac/citations`. Show
-the exact quote, subsection link, jurisdiction, version, and effective dates for a match.
-Show an insufficient-evidence state for abstention and a separate unavailable state for API
-failures. Keep the panel local to development and test.
+Curate one adjacent subsection of O. Reg. 246/22, s. 102 from the official Ontario
+e-Laws v28 page. Extend the retained snapshot and verifier so each passage keeps
+its own subsection link and exact Unicode span, with the shared version,
+jurisdiction, effective interval, retrieval time, and checksum preserved.
 
-Verify a June 27, 2025 match against the running API, an out-of-range date, an unavailable
-API, and production exclusion. Run the web tests, lint, typecheck, production build, and
-API contract drift check. Commit and push at the repository's 10-line checkpoints.
+Verify that the existing query still returns its exact quote, a query unique to
+the added passage returns the new subsection, and dates outside the verified
+interval or a tampered snapshot still produce insufficient evidence. Check the
+result through the existing API and local web panel, run contract drift and the
+relevant suites, then push at the repository's checkpoints.

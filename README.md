@@ -76,6 +76,11 @@ lower-privilege connection for the running API. SQLite is supported for local te
 Run `pnpm run dev:web` in another terminal and open http://127.0.0.1:3000.
 The web server reads the API readiness endpoint. For a different API origin, copy
 `apps/web/.env.example` to `apps/web/.env.local` and set `CARETRACE_API_ORIGIN`.
+To open the public citation panel, also set `CARETRACE_ENABLE_PUBLIC_IPAC=true` in
+`apps/web/.env.local` and restart the development web server. Enable the same flag
+for the API as described above. In **Citation lookup**, enter `protocols` and
+select June 27, 2025 to see the retained excerpt and its subsection link.
+
 Run `pnpm run contracts:generate` after changing OpenAPI and `pnpm run contracts:check`
 to detect stale TypeScript contracts.
 
