@@ -56,3 +56,24 @@ it("renders the exact verified quote and provenance for the selected date", asyn
   });
   expect(report.violations.map((violation) => violation.id)).toEqual([]);
 });
+
+it.each([
+  [200, { status: "insufficient_evidence" }, /Insufficient evidence/],
+  [404, {}, /Citation lookup is unavailable/],
+  [200, { status: "matched" }, /Citation lookup is unavailable/],
+])(
+  "renders the correct status for HTTP %s and %j",
+  async (code, body, message) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(Response.json(body, { status: code })),
+    );
+    render(
+      await PublicIpacPanel({
+        searchParams: Promise.resolve({ q: "protocols", as_of: "2025-07-01" }),
+      }),
+    );
+    expect(screen.getByRole("status").textContent).toMatch(message);
+    expect(screen.queryByRole("blockquote")).toBeNull();
+  },
+);
