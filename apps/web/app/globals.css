@@ -18,7 +18,8 @@ body {
 a {
   color: inherit;
 }
-a:focus-visible {
+a:focus-visible,
+.citation-form :is(input, button):focus-visible {
   outline: 3px solid #3969c2;
   outline-offset: 5px;
 }
@@ -195,6 +196,53 @@ dt {
 .status-evidence {
   background: #fff0d8;
   color: #714417;
+}
+.citation-panel {
+  margin-top: 1.45rem;
+}
+.citation-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.citation-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 650;
+}
+.citation-form label:first-child {
+  flex: 1 1 13rem;
+  min-width: 0;
+}
+.citation-form :is(input, button) {
+  min-height: 2.75rem;
+  min-width: 0;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #7388a2;
+  border-radius: 0.45rem;
+  font: inherit;
+}
+.citation-form button {
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+}
+.citation-result figure {
+  margin: 0.8rem 0 0;
+  padding: 0.75rem 1rem;
+  border-inline-start: 3px solid var(--accent);
+  background: #f3f6fa;
+}
+.citation-result blockquote {
+  margin: 0 0 0.5rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.citation-result a {
+  color: var(--accent);
 }
 .review {
   margin-top: 1.45rem;
