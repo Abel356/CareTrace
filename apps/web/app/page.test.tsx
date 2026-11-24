@@ -13,9 +13,13 @@ vi.mock("./service-status", async (importOriginal) => {
   };
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllEnvs();
+});
 
 it("renders accessibility landmarks, source abstention, and review guidance", async () => {
+  vi.stubEnv("CARETRACE_ENABLE_PUBLIC_IPAC", "false");
   const { container } = render(<Home searchParams={Promise.resolve({})} />);
   expect(screen.getByRole("navigation", { name: "Workspace" })).toBeTruthy();
   expect(screen.getByRole("main")).toBeTruthy();
@@ -30,6 +34,26 @@ it("renders accessibility landmarks, source abstention, and review guidance", as
   });
   expect(report.violations.map((violation) => violation.id)).toEqual([]);
 });
+
+it.each([
+  ["development", "false"],
+  ["production", "true"],
+] as const)(
+  "hides citation lookup in %s with the flag set to %s",
+  (environment, enabled) => {
+    vi.stubEnv("NODE_ENV", environment);
+    vi.stubEnv("CARETRACE_ENABLE_PUBLIC_IPAC", enabled);
+    render(
+      <Home
+        searchParams={Promise.resolve({ q: "protocols", as_of: "2025-06-27" })}
+      />,
+    );
+    expect(screen.queryByRole("link", { name: "Citation lookup" })).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Public IPAC citation lookup" }),
+    ).toBeNull();
+  },
+);
 
 it.each([
   ["checking", "Checking"],
