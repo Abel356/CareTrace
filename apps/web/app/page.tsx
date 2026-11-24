@@ -1,7 +1,15 @@
 import { Suspense } from "react";
+import { PublicIpacPanel } from "./public-ipac-panel";
 import { ServiceStatus, StatusCard } from "./service-status";
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: Pick<PageProps<"/">, "searchParams">) {
+  const showPublicIpac =
+    (process.env.NODE_ENV === "development" ||
+      process.env.NODE_ENV === "test") &&
+    process.env.CARETRACE_ENABLE_PUBLIC_IPAC === "true";
+
   return (
     <>
       <a className="skip" href="#main">
@@ -15,6 +23,7 @@ export default function Home() {
           </a>
           <nav aria-label="Workspace">
             <a href="#status">Status</a>
+            {showPublicIpac ? <a href="#public-ipac">Citation lookup</a> : null}
             <a href="#review">Review guidance</a>
           </nav>
         </div>
@@ -37,20 +46,26 @@ export default function Home() {
             <Suspense fallback={<StatusCard state="checking" />}>
               <ServiceStatus />
             </Suspense>
-            <div className="card">
-              <div className="card-header">
-                <h3>Source coverage</h3>
-                <span className="status status-evidence">
-                  Insufficient evidence
-                </span>
+            {showPublicIpac ? null : (
+              <div className="card">
+                <div className="card-header">
+                  <h3>Source coverage</h3>
+                  <span className="status status-evidence">
+                    Insufficient evidence
+                  </span>
+                </div>
+                <p>
+                  Regulatory citations are unavailable in this workspace view.
+                </p>
               </div>
-              <p>
-                The prototype has no verified regulatory corpus. A source review
-                date will appear once sources are checked.
-              </p>
-            </div>
+            )}
           </div>
         </section>
+        {showPublicIpac ? (
+          <Suspense fallback={<p role="status">Loading citation lookup…</p>}>
+            <PublicIpacPanel searchParams={searchParams} />
+          </Suspense>
+        ) : null}
         <section
           id="review"
           aria-labelledby="review-heading"

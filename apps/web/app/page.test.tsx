@@ -16,7 +16,7 @@ vi.mock("./service-status", async (importOriginal) => {
 afterEach(cleanup);
 
 it("renders accessibility landmarks, source abstention, and review guidance", async () => {
-  const { container } = render(<Home />);
+  const { container } = render(<Home searchParams={Promise.resolve({})} />);
   expect(screen.getByRole("navigation", { name: "Workspace" })).toBeTruthy();
   expect(screen.getByRole("main")).toBeTruthy();
   expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(
