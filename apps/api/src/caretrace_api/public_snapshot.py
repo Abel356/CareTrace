@@ -89,21 +89,26 @@ def verify_snapshot(directory: Path) -> SnapshotManifest:
     )
     if manifest.version.document_id != manifest.document.id:
         raise ValueError("snapshot version refers to a different document")
-    if str(manifest.citation_url).partition("#")[0] != str(
-        manifest.version.version_url
-    ):
-        raise ValueError("snapshot citation URL refers to a different version")
-    section = SourceSection(
-        id=manifest.section_id,
-        source_version_id=manifest.version.id,
-        locator=manifest.locator,
-        citation_url=manifest.citation_url,
-        text=read_snapshot_text(directory / "source.txt", manifest.version),
-    )
-    if not manifest.citation.matches(section):
-        raise ValueError(
-            "snapshot citation does not match the section text or identifiers"
+    passages = manifest.listed_passages()
+    sections = read_snapshot_sections(directory / "source.txt", manifest.version)
+    if len(sections) != len(passages):
+        raise ValueError("snapshot section count does not match its manifest")
+    for passage, text in zip(passages, sections, strict=True):
+        if str(passage.citation_url).partition("#")[0] != str(
+            manifest.version.version_url
+        ):
+            raise ValueError("snapshot citation URL refers to a different version")
+        section = SourceSection(
+            id=passage.section_id,
+            source_version_id=manifest.version.id,
+            locator=passage.locator,
+            citation_url=passage.citation_url,
+            text=text,
         )
+        if not passage.citation.matches(section):
+            raise ValueError(
+                "snapshot citation does not match its section or identifiers"
+            )
     return manifest
 
 
