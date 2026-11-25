@@ -11,8 +11,9 @@ _SNAPSHOT = Path(__file__).resolve().parents[3] / "corpus/ontario/220246/v28"
 
 def test_retained_ontario_snapshot() -> None:
     manifest = verify_snapshot(_SNAPSHOT)
-    assert manifest.locator == "s. 102 (3)"
-    assert str(manifest.citation_url) == (
+    retained = manifest.listed_passages()
+    assert retained[-1].locator == "s. 102 (3)"
+    assert str(retained[-1].citation_url) == (
         "https://www.ontario.ca/laws/regulation/220246/v28#BK129"
     )
     assert manifest.version.is_effective_on(date(2025, 6, 26)) is False
@@ -48,7 +49,10 @@ def test_cannot_verify_unsupported_manifest_claims(
     copytree(_SNAPSHOT, tmp_path, dirs_exist_ok=True)
     manifest = tmp_path / "manifest.json"
     data = json.loads(manifest.read_bytes())
-    data[group].update(changes)
+    target = data[group]
+    if group == "citation" and data.get("passages"):
+        target = data["passages"][-1]["citation"]
+    target.update(changes)
     manifest.write_text(json.dumps(data), encoding="utf-8")
 
     with pytest.raises(ValueError, match=message):

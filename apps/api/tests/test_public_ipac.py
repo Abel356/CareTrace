@@ -48,7 +48,8 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     assert passage["locator"] == "s. 102 (3)"
     assert passage["citation_url"] == f"{document['source_url']}/v28#BK129"
     span = passage["span"]
-    section = retained.decode("utf-8").split("\n\n", maxsplit=1)[1]
+    sections = retained.decode("utf-8").strip().split("\n\n")[1:]
+    section = next(item for item in sections if span["quote"] in item)
     assert (span["start"], span["end"]) == (4, 143)
     assert span["quote"] == section[span["start"] : span["end"]]
     assert span["source_version_id"] == version["id"]
