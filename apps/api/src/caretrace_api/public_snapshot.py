@@ -64,29 +64,10 @@ class SnapshotPassage(Contract):
 class SnapshotManifest(Contract):
     document: SourceDocument
     version: SourceVersion
-    section_id: UUID | None = None
-    locator: Label | None = None
-    citation_url: SourceUrl | None = None
-    citation: CitationSpan | None = None
-    passages: tuple[SnapshotPassage, ...] = ()
+    passages: tuple[SnapshotPassage, ...]
 
     def listed_passages(self) -> tuple[SnapshotPassage, ...]:
-        if self.passages:
-            return self.passages
-        if None in (self.section_id, self.locator, self.citation_url, self.citation):
-            raise ValueError("snapshot manifest has no passages")
-        assert self.section_id is not None
-        assert self.locator is not None
-        assert self.citation_url is not None
-        assert self.citation is not None
-        return (
-            SnapshotPassage(
-                section_id=self.section_id,
-                locator=self.locator,
-                citation_url=self.citation_url,
-                citation=self.citation,
-            ),
-        )
+        return self.passages
 
 
 def verify_snapshot(directory: Path) -> SnapshotManifest:
