@@ -47,6 +47,13 @@ def read_snapshot_text(source: Path, version: SourceVersion) -> str:
     return section.removesuffix("\n")
 
 
+class SnapshotPassage(Contract):
+    section_id: UUID
+    locator: Label
+    citation_url: SourceUrl
+    citation: CitationSpan
+
+
 class SnapshotManifest(Contract):
     document: SourceDocument
     version: SourceVersion
@@ -54,6 +61,7 @@ class SnapshotManifest(Contract):
     locator: Label
     citation_url: SourceUrl
     citation: CitationSpan
+    passages: tuple[SnapshotPassage, ...] = ()
 
 
 def verify_snapshot(directory: Path) -> SnapshotManifest:
