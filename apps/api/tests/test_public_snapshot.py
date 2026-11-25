@@ -12,10 +12,14 @@ _SNAPSHOT = Path(__file__).resolve().parents[3] / "corpus/ontario/220246/v28"
 def test_retained_ontario_snapshot() -> None:
     manifest = verify_snapshot(_SNAPSHOT)
     retained = manifest.listed_passages()
-    assert retained[-1].locator == "s. 102 (3)"
+    assert [passage.locator for passage in retained] == ["s. 102 (2)", "s. 102 (3)"]
     assert str(retained[-1].citation_url) == (
         "https://www.ontario.ca/laws/regulation/220246/v28#BK129"
     )
+    sections = (_SNAPSHOT / "source.txt").read_text(encoding="utf-8").strip().split("\n\n")[1:]
+    for passage, section in zip(retained, sections, strict=True):
+        span = passage.citation
+        assert span.quote == section[span.start : span.end]
     assert manifest.version.is_effective_on(date(2025, 6, 26)) is False
     assert manifest.version.is_effective_on(date(2025, 6, 27)) is True
     assert manifest.version.is_effective_on(date(2025, 6, 30)) is True
