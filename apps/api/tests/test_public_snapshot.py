@@ -53,9 +53,10 @@ def test_cannot_verify_unsupported_manifest_claims(
     copytree(_SNAPSHOT, tmp_path, dirs_exist_ok=True)
     manifest = tmp_path / "manifest.json"
     data = json.loads(manifest.read_bytes())
-    target = data[group]
     if group == "citation" and data.get("passages"):
         target = data["passages"][-1]["citation"]
+    else:
+        target = data[group]
     target.update(changes)
     manifest.write_text(json.dumps(data), encoding="utf-8")
 
