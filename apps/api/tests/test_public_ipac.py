@@ -58,9 +58,7 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
 def test_public_citation_finds_the_added_surveillance_passage(
     client: TestClient,
 ) -> None:
-    response = client.get(
-        PATH, params={"q": "surveillance", "as_of": "2025-06-27"}
-    )
+    response = client.get(PATH, params={"q": "surveillance", "as_of": "2025-06-27"})
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "matched"
@@ -126,8 +124,11 @@ def test_public_lookup_rejects_writes_and_invalid_dates(client: TestClient) -> N
 @pytest.mark.parametrize("missing", [True, False], ids=["missing", "changed"])
 @pytest.mark.parametrize("query", ["protocols", "surveillance"])
 def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
-    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
-    missing: bool, query: str,
+    client: TestClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    missing: bool,
+    query: str,
 ) -> None:
     if not missing:
         copytree(SNAPSHOT, tmp_path, dirs_exist_ok=True)

@@ -3,6 +3,7 @@ import re
 from datetime import date, timedelta
 from hashlib import sha256
 from pathlib import Path
+from typing import Self
 from uuid import UUID
 
 from caretrace_contracts.common import Contract, Label, SourceUrl
@@ -12,6 +13,7 @@ from caretrace_contracts.sources import (
     SourceSection,
     SourceVersion,
 )
+from pydantic import model_validator
 
 _MONTHS = "January February March April May June July August September October November December".split()
 _DATE = r"([A-Z][a-z]+) ([1-9][0-9]?), ([0-9]{4})"
@@ -66,6 +68,15 @@ class SnapshotManifest(Contract):
     version: SourceVersion
     passages: tuple[SnapshotPassage, ...]
 
+    @model_validator(mode="after")
+    def validate_passages(self) -> Self:
+        section_ids = [passage.section_id for passage in self.passages]
+        if not section_ids:
+            raise ValueError("snapshot manifest has no passages")
+        if len(section_ids) != len(set(section_ids)):
+            raise ValueError("snapshot passage section IDs must be unique")
+        return self
+
     def listed_passages(self) -> tuple[SnapshotPassage, ...]:
         return self.passages
 
@@ -113,8 +124,7 @@ def main() -> None:
         parser.error(str(error))
     locators = ", ".join(passage.locator for passage in manifest.listed_passages())
     print(
-        f"Verified {manifest.document.title}, {locators} "
-        f"({manifest.version.version})."
+        f"Verified {manifest.document.title}, {locators} ({manifest.version.version})."
     )
 
 

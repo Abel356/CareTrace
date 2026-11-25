@@ -16,7 +16,9 @@ def test_retained_ontario_snapshot() -> None:
     assert str(retained[-1].citation_url) == (
         "https://www.ontario.ca/laws/regulation/220246/v28#BK129"
     )
-    sections = (_SNAPSHOT / "source.txt").read_text(encoding="utf-8").strip().split("\n\n")[1:]
+    sections = (
+        (_SNAPSHOT / "source.txt").read_text(encoding="utf-8").strip().split("\n\n")[1:]
+    )
     for passage, section in zip(retained, sections, strict=True):
         span = passage.citation
         assert span.quote == section[span.start : span.end]
@@ -32,6 +34,17 @@ def test_cannot_verify_changed_source_bytes(tmp_path: Path) -> None:
     source.write_bytes(source.read_bytes() + b"\n")
 
     with pytest.raises(ValueError, match="SHA-256 mismatch"):
+        verify_snapshot(tmp_path)
+
+
+def test_cannot_verify_duplicate_passage_identifiers(tmp_path: Path) -> None:
+    copytree(_SNAPSHOT, tmp_path, dirs_exist_ok=True)
+    manifest = tmp_path / "manifest.json"
+    data = json.loads(manifest.read_bytes())
+    data["passages"].append(data["passages"][0])
+    manifest.write_text(json.dumps(data), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="section IDs must be unique"):
         verify_snapshot(tmp_path)
 
 
