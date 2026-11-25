@@ -48,19 +48,20 @@ The demo uses a case-insensitive substring search within each passage. Citation 
 are half-open Unicode code point ranges within the stored section, and the effective
 end date is exclusive. Fixture URLs use the reserved `.invalid` domain.
 
-Verify the retained Ontario e-Laws IPAC excerpt from the repository root after setup.
+Verify the retained Ontario e-Laws IPAC passages from the repository root after setup.
 
 ```sh
 uv run --locked --offline python -m caretrace_api.public_snapshot corpus/ontario/220246/v28
 ```
 
-The command checks the retained UTF-8 bytes, historical period, and exact citation span.
+The command checks the retained UTF-8 bytes, historical period, and exact citation spans.
 
 To query this snapshot from a local checkout, set `CARETRACE_ENABLE_PUBLIC_IPAC=true`
 in `.env` and run the API in development or test. Try
 `GET /api/v1/public/ipac/citations?q=protocols&as_of=2025-06-27`.
-The lookup checks a case-insensitive substring within the verified citation and returns
-the exact span and source provenance for June 27 through June 30, 2025, inclusive.
+The lookup checks a case-insensitive substring within the verified citations and returns
+the exact span and source provenance for June 27 through June 30, 2025, inclusive. Query
+`surveillance` to retrieve s. 102 (2), or `protocols` to retrieve s. 102 (3).
 Other dates, unmatched queries, or unavailable or invalid snapshots return
 `insufficient_evidence`. The route is disabled in production.
 
@@ -78,8 +79,8 @@ The web server reads the API readiness endpoint. For a different API origin, cop
 `apps/web/.env.example` to `apps/web/.env.local` and set `CARETRACE_API_ORIGIN`.
 To open the public citation panel, also set `CARETRACE_ENABLE_PUBLIC_IPAC=true` in
 `apps/web/.env.local` and restart the development web server. Enable the same flag
-for the API as described above. In **Citation lookup**, enter `protocols` and
-select June 27, 2025 to see the retained excerpt and its subsection link.
+for the API as described above. In **Citation lookup**, enter `surveillance` or
+`protocols` and select June 27, 2025 to see the matching passage and subsection link.
 
 Run `pnpm run contracts:generate` after changing OpenAPI and `pnpm run contracts:check`
 to detect stale TypeScript contracts.
