@@ -47,6 +47,13 @@ def read_snapshot_text(source: Path, version: SourceVersion) -> str:
     return section.removesuffix("\n")
 
 
+def read_snapshot_sections(source: Path, version: SourceVersion) -> tuple[str, ...]:
+    sections = tuple(read_snapshot_text(source, version).split("\n\n"))
+    if not all(section.strip() for section in sections):
+        raise ValueError("snapshot contains an empty section")
+    return sections
+
+
 class SnapshotPassage(Contract):
     section_id: UUID
     locator: Label
