@@ -68,6 +68,20 @@ def test_public_citation_finds_the_added_surveillance_passage(
     assert "particular communicable disease" in passage["span"]["quote"]
 
 
+@pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
+def test_public_lookup_returns_both_passages_for_a_shared_query(
+    client: TestClient, as_of: str
+) -> None:
+    response = client.get(PATH, params={"q": "protocols", "as_of": as_of})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "matched"
+    assert [passage["locator"] for passage in body["passages"]] == [
+        "s. 102 (2)",
+        "s. 102 (3)",
+    ]
+
+
 @pytest.mark.parametrize(
     ("query", "as_of"),
     [
