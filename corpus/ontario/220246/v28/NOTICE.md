@@ -2,7 +2,7 @@
 
 © King's Printer for Ontario, 2022.
 
-Unofficial reproduction of subsection 102 (3) of O. Reg. 246/22 (General), v28.
+Unofficial reproduction of subsections 102 (2) and (3) of O. Reg. 246/22 (General), v28.
 The regulation is available from [Ontario e-Laws](https://www.ontario.ca/laws/regulation/220246/v28#BK129).
 [Ontario legal materials copyright policy](https://www.ontario.ca/page/copyright-information).
 
