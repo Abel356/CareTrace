@@ -55,6 +55,21 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     assert span["source_version_id"] == version["id"]
 
 
+def test_public_citation_finds_the_added_surveillance_passage(
+    client: TestClient,
+) -> None:
+    response = client.get(
+        PATH, params={"q": "surveillance", "as_of": "2025-06-27"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "matched"
+    (passage,) = body["passages"]
+    assert passage["locator"] == "s. 102 (2)"
+    assert passage["citation_url"].endswith("/v28#BK129")
+    assert "particular communicable disease" in passage["span"]["quote"]
+
+
 @pytest.mark.parametrize(
     ("query", "as_of"),
     [
