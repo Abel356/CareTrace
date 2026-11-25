@@ -130,8 +130,10 @@ def main() -> None:
         manifest = verify_snapshot(args.directory)
     except (OSError, ValueError) as error:
         parser.error(str(error))
+    locators = ", ".join(passage.locator for passage in manifest.listed_passages())
     print(
-        f"Verified {manifest.document.title}, {manifest.locator} ({manifest.version.version})."
+        f"Verified {manifest.document.title}, {locators} "
+        f"({manifest.version.version})."
     )
 
 
