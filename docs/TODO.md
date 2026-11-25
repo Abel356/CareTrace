@@ -1,14 +1,15 @@
-# November 25, 2026
+# November 26, 2026
 
-## Add a second verified passage to the historical IPAC lookup
+## Verify the public IPAC lookup across the v28–v29 changeover
 
-Curate one adjacent subsection of O. Reg. 246/22, s. 102 from the official Ontario
-e-Laws v28 page. Extend the retained snapshot and verifier so each passage keeps
-its own subsection link and exact Unicode span, with the shared version,
-jurisdiction, effective interval, retrieval time, and checksum preserved.
+Retain one subsection, s. 102 (3), from O. Reg. 246/22 v29 after confirming the
+official historical interval and citation anchor. Record the attributed UTF-8
+excerpt, URL, jurisdiction, version, retrieval time, SHA-256, and exact quote
+span. Extend the opt-in lookup to cite the single verified version that covers
+the requested date.
 
-Verify that the existing query still returns its exact quote, a query unique to
-the added passage returns the new subsection, and dates outside the verified
-interval or a tampered snapshot still produce insufficient evidence. Check the
-result through the existing API and local web panel, run contract drift and the
-relevant suites, then push at the repository's checkpoints.
+Verify June 30 against v28 and July 1 against v29 using the same query and
+checking each exact quote and source link. Exercise abstention for dates
+without verified coverage and for conflicting version intervals. Run the
+snapshot verifier, API tests, live web panel, and contract drift check before
+closing the task.

@@ -1,5 +1,42 @@
 # Progress
 
+## November 25, 2026
+
+- Added O. Reg. 246/22 v28, s. 102 (2) to the opt-in public IPAC lookup.
+  The snapshot verifies every passage against the shared SHA-256 and historical
+  effective interval. Each passage carries its own subsection locator and
+  exact Unicode span. Both e-Laws links open at the official section 102
+  anchor, which serves both subsections.
+  [Ontario e-Laws v28](https://www.ontario.ca/laws/regulation/220246/v28#BK129)
+- Compared the retained UTF-8 bytes with the official e-Laws HTML saved on
+  November 22. Extracted the historical notice and the subsection and clause
+  paragraphs under `BK129`, decoded HTML entities, stripped markup and outer
+  whitespace, and preserved the clause line breaks and nonbreaking spaces.
+  Joined the notice and subsections with blank lines, then checked the
+  resulting SHA-256 and the June 27–30 interval against the adjacent versions.
+  A fresh e-Laws request was unavailable during this run.
+- Verified the live API and web panel over loopback. `surveillance` returned
+  subsection (2), `standards and protocols` returned subsection (3), and
+  `protocols` returned both. The panel rendered the exact quotes and source
+  links. June 26 and July 1 returned insufficient evidence. Automated tests
+  also covered missing and modified snapshots, invalid spans, and duplicate
+  section identifiers.
+- Local verification passed 101 Python tests, 13 web tests, repository hooks,
+  lint, strict type checks, the Python package and Next.js builds, and OpenAPI
+  contract drift. The local suite skipped the disposable PostgreSQL test.
+  GitHub Actions passed all 102 Python tests, including PostgreSQL with
+  pgvector, and all 13 web tests. The existing TestClient deprecation warning
+  remains.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/45711754471)
+
+### Checkpoints
+
+Twenty-two pushed commits cover the task, including this handoff. The run
+started with 20 published implementation, corpus, and verification checkpoints
+from `7f06cda` through `e8b1cc0`. The API regression in `3ba44e8` confirms that
+a shared query returns both citations at either end of the verified interval.
+The remaining work after that regression was verification and documentation.
+
 ## November 24, 2026
 
 - Shipped an opt-in public IPAC citation panel for local development and test.
