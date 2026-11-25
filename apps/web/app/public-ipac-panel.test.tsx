@@ -19,13 +19,13 @@ it("renders the exact verified quote and provenance for the selected date", asyn
       corpus: "public_ipac",
       document: snapshot.document,
       version: snapshot.version,
-      passages: [
-        {
-          locator: snapshot.locator,
-          citation_url: snapshot.citation_url,
-          span: snapshot.citation,
-        },
-      ],
+      passages: snapshot.passages.map(
+        ({ citation, citation_url, locator }) => ({
+          locator,
+          citation_url,
+          span: citation,
+        }),
+      ),
     }),
   );
   vi.stubGlobal("fetch", fetchMock);
@@ -42,12 +42,16 @@ it("renders the exact verified quote and provenance for the selected date", asyn
     ),
     expect.objectContaining({ cache: "no-store", redirect: "error" }),
   );
-  expect(screen.getByRole("blockquote").textContent).toBe(
-    snapshot.citation.quote,
-  );
   expect(
-    screen.getByRole("link", { name: /s\. 102 \(3\)/ }).getAttribute("href"),
-  ).toBe(snapshot.citation_url);
+    screen.getAllByRole("blockquote").map((quote) => quote.textContent),
+  ).toEqual(snapshot.passages.map((passage) => passage.citation.quote));
+  snapshot.passages.forEach((passage) => {
+    expect(
+      screen
+        .getByRole("link", { name: `Ontario e-Laws, ${passage.locator}` })
+        .getAttribute("href"),
+    ).toBe(passage.citation_url);
+  });
   expect(screen.getByText(/Ontario \(CA-ON\) · v28/).textContent).toContain(
     "2025-06-27 until 2025-07-01 (exclusive)",
   );
