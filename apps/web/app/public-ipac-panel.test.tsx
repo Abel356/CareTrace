@@ -42,6 +42,7 @@ it("renders the exact verified quote and provenance for the selected date", asyn
     ),
     expect.objectContaining({ cache: "no-store", redirect: "error" }),
   );
+  expect(screen.getByText(/small curated historical snapshot/)).toBeTruthy();
   expect(
     screen.getAllByRole("blockquote").map((quote) => quote.textContent),
   ).toEqual(snapshot.passages.map((passage) => passage.citation.quote));

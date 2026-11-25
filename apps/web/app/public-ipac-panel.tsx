@@ -36,7 +36,7 @@ export async function PublicIpacPanel({
     >
       <h2 id="public-ipac-heading">Public IPAC citation lookup</h2>
       <p id="public-ipac-scope">
-        Search one curated historical excerpt using public terms only.
+        Search a small curated historical snapshot using public terms only.
       </p>
       <form
         action="/#public-ipac"
