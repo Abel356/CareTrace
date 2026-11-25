@@ -63,6 +63,18 @@ class SnapshotManifest(Contract):
     citation: CitationSpan
     passages: tuple[SnapshotPassage, ...] = ()
 
+    def listed_passages(self) -> tuple[SnapshotPassage, ...]:
+        if self.passages:
+            return self.passages
+        return (
+            SnapshotPassage(
+                section_id=self.section_id,
+                locator=self.locator,
+                citation_url=self.citation_url,
+                citation=self.citation,
+            ),
+        )
+
 
 def verify_snapshot(directory: Path) -> SnapshotManifest:
     manifest = SnapshotManifest.model_validate_json(
