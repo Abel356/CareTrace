@@ -75,6 +75,8 @@ def test_public_citation_finds_the_added_surveillance_passage(
     [
         ("protocols", "2025-06-26"),
         ("protocols", "2025-07-01"),
+        ("surveillance", "2025-06-26"),
+        ("surveillance", "2025-07-01"),
         ("unlisted", "2025-06-27"),
         ("Historical version", "2025-06-27"),
         ("  ", "2025-06-27"),
@@ -122,8 +124,10 @@ def test_public_lookup_rejects_writes_and_invalid_dates(client: TestClient) -> N
 
 
 @pytest.mark.parametrize("missing", [True, False], ids=["missing", "changed"])
+@pytest.mark.parametrize("query", ["protocols", "surveillance"])
 def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
-    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, missing: bool
+    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+    missing: bool, query: str,
 ) -> None:
     if not missing:
         copytree(SNAPSHOT, tmp_path, dirs_exist_ok=True)
@@ -131,6 +135,6 @@ def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
         source.write_bytes(source.read_bytes() + b"\n")
     monkeypatch.setattr(public_ipac, "_SNAPSHOT", tmp_path)
 
-    response = client.get(PATH, params={"q": "protocols", "as_of": "2025-06-27"})
+    response = client.get(PATH, params={"q": query, "as_of": "2025-06-27"})
     assert response.status_code == 200
     assert response.json() == {"status": "insufficient_evidence"}
