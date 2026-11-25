@@ -22,20 +22,27 @@ def lookup(query: str, as_of: date) -> PublicCitationLookup:
     except (OSError, ValueError, OverflowError):
         return InsufficientEvidence(status="insufficient_evidence")
 
-    if (
-        manifest.version.is_effective_on(as_of) is not True
-        or keyword not in manifest.citation.quote.casefold()
-    ):
+    if manifest.version.is_effective_on(as_of) is not True:
         return InsufficientEvidence(status="insufficient_evidence")
 
-    passage = CitedPassage(
-        locator=manifest.locator,
-        citation_url=manifest.citation_url,
-        span=manifest.citation,
+    matches = tuple(
+        passage
+        for passage in manifest.listed_passages()
+        if keyword in passage.citation.quote.casefold()
     )
+    if not matches:
+        return InsufficientEvidence(status="insufficient_evidence")
+
     return PublicCitationMatch(
         status="matched",
         document=manifest.document,
         version=manifest.version,
-        passages=(passage,),
+        passages=tuple(
+            CitedPassage(
+                locator=passage.locator,
+                citation_url=passage.citation_url,
+                span=passage.citation,
+            )
+            for passage in matches
+        ),
     )
