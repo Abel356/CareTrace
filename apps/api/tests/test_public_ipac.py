@@ -22,9 +22,46 @@ def client() -> Iterator[TestClient]:
         yield client
 
 
-@pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
+@pytest.mark.parametrize(
+    ("as_of", "revision", "start", "until", "retrieved"),
+    [
+        (
+            "2025-06-27",
+            "v28",
+            "2025-06-27",
+            "2025-07-01",
+            "2026-11-22T16:39:05.770674Z",
+        ),
+        (
+            "2025-06-30",
+            "v28",
+            "2025-06-27",
+            "2025-07-01",
+            "2026-11-22T16:39:05.770674Z",
+        ),
+        (
+            "2025-07-01",
+            "v29",
+            "2025-07-01",
+            "2025-08-01",
+            "2026-11-22T16:39:34.052961Z",
+        ),
+        (
+            "2025-07-31",
+            "v29",
+            "2025-07-01",
+            "2025-08-01",
+            "2026-11-22T16:39:34.052961Z",
+        ),
+    ],
+)
 def test_public_citation_returns_the_verified_span_at_both_boundaries(
-    client: TestClient, as_of: str
+    client: TestClient,
+    as_of: str,
+    revision: str,
+    start: str,
+    until: str,
+    retrieved: str,
 ) -> None:
     response = client.get(
         PATH, params={"q": "  STANDARDS and PROTOCOLS  ", "as_of": as_of}
@@ -36,17 +73,17 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     document, version = body["document"], body["version"]
     assert document["jurisdiction"] == "CA-ON"
     assert document["source_url"] == "https://www.ontario.ca/laws/regulation/220246"
-    assert version["version"] == "v28"
+    assert version["version"] == revision
     assert (version["effective_from"], version["effective_until"]) == (
-        "2025-06-27",
-        "2025-07-01",
+        start,
+        until,
     )
-    assert version["retrieved_at"] == "2026-11-22T16:39:05.770674Z"
-    retained = (SNAPSHOT / "source.txt").read_bytes()
+    assert version["retrieved_at"] == retrieved
+    retained = (SNAPSHOT.parent / revision / "source.txt").read_bytes()
     assert version["original_sha256"] == sha256(retained).hexdigest()
     (passage,) = body["passages"]
     assert passage["locator"] == "s. 102 (3)"
-    assert passage["citation_url"] == f"{document['source_url']}/v28#BK129"
+    assert passage["citation_url"] == f"{document['source_url']}/{revision}#BK129"
     span = passage["span"]
     sections = retained.decode("utf-8").strip().split("\n\n")[1:]
     section = next(item for item in sections if span["quote"] in item)
