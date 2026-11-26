@@ -1,5 +1,41 @@
 # Progress
 
+## November 26, 2026
+
+- Retained O. Reg. 246/22 v29, s. 102 (3), for July 1 through July 31, 2025,
+  inclusive. Confirmed the historical notice through the indexed Ontario e-Laws
+  page and extracted the subsection from the official HTML saved November 22.
+  The attributed UTF-8 excerpt and manifest preserve the original retrieval time,
+  checksum, version, jurisdiction, and exact span under the section 102 anchor.
+  A fresh direct fetch was unavailable.
+  [Ontario e-Laws v29](https://www.ontario.ca/laws/regulation/220246/v29#BK129)
+- The opt-in lookup verifies both snapshots before resolving the requested date.
+  It returns exact passages from the single applicable version and abstains for
+  gaps, overlapping dates, missing or altered evidence, and unmatched queries.
+  Subsection 102 (3) has the same wording in both versions and a version-specific
+  citation link. July surveillance queries abstain because v29 contains only
+  subsection 102 (3).
+  [Ontario e-Laws v28](https://www.ontario.ca/laws/regulation/220246/v28#BK129)
+- Eight live FastAPI and Next.js loopback cases checked the June 30 and July 1
+  changeover, July 31 coverage, both outer date boundaries, and passage selection.
+  Automated tests also checked overlapping verified intervals, unavailable or
+  modified snapshots, and exact web citations with an accessibility scan.
+- Local checks passed 109 Python tests and 14 web tests, both snapshot verifiers,
+  lint, strict typing, builds, private-key and secret scans, and OpenAPI drift
+  detection. One live PostgreSQL test was skipped locally. Windows blocked the
+  installed secret-check launcher, so staged checks ran directly before each
+  commit. Hosted CI passed 110 Python tests with PostgreSQL and pgvector and
+  14 web tests. The existing upstream TestClient deprecation warning remains.
+  [GitHub Actions run](https://github.com/Abel356/CareTrace/actions/runs/45877062316)
+
+### Checkpoints
+
+Nine commits cover the changeover and handoff. They cover the public digest,
+the retained snapshot, version selection, four date boundaries, overlap
+abstention, invalid evidence, panel rendering, usage documentation, and this
+handoff. The task reached nine coherent checkpoints within its snapshot,
+lookup, and verification scope.
+
 ## November 25, 2026
 
 - Added O. Reg. 246/22 v28, s. 102 (2) to the opt-in public IPAC lookup.

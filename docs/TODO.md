@@ -1,15 +1,15 @@
-# November 26, 2026
+# November 27, 2026
 
-## Verify the public IPAC lookup across the v28–v29 changeover
+## Verify surveillance citations across the v28–v29 changeover
 
-Retain one subsection, s. 102 (3), from O. Reg. 246/22 v29 after confirming the
-official historical interval and citation anchor. Record the attributed UTF-8
-excerpt, URL, jurisdiction, version, retrieval time, SHA-256, and exact quote
-span. Extend the opt-in lookup to cite the single verified version that covers
-the requested date.
+Retain subsection 102 (2) in the v29 Ontario e-Laws snapshot. Verify its
+operative text, clause formatting, and section anchor against the official
+historical version. Recompute the snapshot checksum and preserve the source
+URL, jurisdiction, version, retrieval timestamp, effective interval, and
+exact Unicode offsets for both retained v29 subsections.
 
-Verify June 30 against v28 and July 1 against v29 using the same query and
-checking each exact quote and source link. Exercise abstention for dates
-without verified coverage and for conflicting version intervals. Run the
-snapshot verifier, API tests, live web panel, and contract drift check before
-closing the task.
+Verify that a surveillance query returns subsection 102 (2) with the v28
+citation on June 30 and the v29 citation on July 1. Check that a shared
+protocols query cites both subsections in each version and that dates
+outside verified coverage still abstain. Run both snapshot verifiers,
+the API and web tests, the live panel, and the OpenAPI drift check.
