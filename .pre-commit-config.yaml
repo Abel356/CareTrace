@@ -14,10 +14,10 @@ repos:
       - id: detect-secrets
         name: Check for secrets
         entry: uv run --locked detect-secrets-hook
-        # Exclude package integrity digests and the exact retained public e-Laws digest.
+        # Exclude package integrity digests and exact retained public e-Laws digests.
         args:
           - --exclude-lines
-          - '^\s*(?:resolution: \{integrity: sha(?:512|1)-[A-Za-z0-9+/=]+\}|integrity: "sha(?:512|1)-[A-Za-z0-9+/=]+"|"original_sha256": "2a8d3102617cf48609c431272fd105ba22c968996099500e27d08af6207fea83",)\s*$'
+          - '^\s*(?:resolution: \{integrity: sha(?:512|1)-[A-Za-z0-9+/=]+\}|integrity: "sha(?:512|1)-[A-Za-z0-9+/=]+"|"original_sha256": "(?:2a8d3102617cf48609c431272fd105ba22c968996099500e27d08af6207fea83|0fff85c2802662ad25d04ec2723608d8e30de0ce92c29e44e7c337a6f6c78f33)",)\s*$'
         language: unsupported
         types: [text]
       - id: ruff
