@@ -52,18 +52,21 @@ Verify the retained Ontario e-Laws IPAC passages from the repository root after 
 
 ```sh
 uv run --locked --offline python -m caretrace_api.public_snapshot corpus/ontario/220246/v28
+uv run --locked --offline python -m caretrace_api.public_snapshot corpus/ontario/220246/v29
 ```
 
 The command checks the retained UTF-8 bytes, historical period, and exact citation spans.
 
-To query this snapshot from a local checkout, set `CARETRACE_ENABLE_PUBLIC_IPAC=true`
+To query these snapshots from a local checkout, set `CARETRACE_ENABLE_PUBLIC_IPAC=true`
 in `.env` and run the API in development or test. Try
-`GET /api/v1/public/ipac/citations?q=protocols&as_of=2025-06-27`.
-The lookup checks a case-insensitive substring within the verified citations and returns
-the exact span and source provenance for June 27 through June 30, 2025, inclusive. Query
-`surveillance` to retrieve s. 102 (2), or `protocols` to retrieve s. 102 (3).
-Other dates, unmatched queries, or unavailable or invalid snapshots return
-`insufficient_evidence`. The route is disabled in production.
+`GET /api/v1/public/ipac/citations?q=standards%20and%20protocols&as_of=2025-06-30`
+and repeat with July 1 to see the version and source link change.
+The lookup searches the verified passages for the version covering the requested date.
+Version v28 covers June 27–30, 2025, with subsections 102 (2) and (3).
+Version v29 covers July 1–31, 2025, with subsection 102 (3).
+Uncovered dates, overlapping coverage for the requested date, unmatched queries,
+and unavailable or invalid snapshots return `insufficient_evidence`. The route is
+disabled in production.
 
 See `.env.example` for the request-size limit and explicit host and browser-origin
 allowlists. Production requires an explicit host list and HTTPS origins. Error responses
