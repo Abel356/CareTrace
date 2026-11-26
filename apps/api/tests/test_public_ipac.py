@@ -1,3 +1,4 @@
+import json
 from collections.abc import Iterator
 from hashlib import sha256
 from pathlib import Path
@@ -7,6 +8,7 @@ from typing import Literal
 import pytest
 from caretrace_api import public_ipac
 from caretrace_api.main import create_app
+from caretrace_api.public_snapshot import verify_snapshot
 from caretrace_api.settings import Settings
 from fastapi.testclient import TestClient
 from pydantic import SecretStr
@@ -188,5 +190,26 @@ def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
     monkeypatch.setattr(public_ipac, "_SNAPSHOTS", (tmp_path, SNAPSHOT.parent / "v29"))
 
     response = client.get(PATH, params={"q": query, "as_of": "2025-06-27"})
+    assert response.status_code == 200
+    assert response.json() == {"status": "insufficient_evidence"}
+
+
+@pytest.mark.parametrize("query", ["protocols", "surveillance"])
+def test_public_lookup_abstains_when_verified_intervals_overlap(
+    client: TestClient, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, query: str
+) -> None:
+    copytree(SNAPSHOT.parent / "v29", tmp_path, dirs_exist_ok=True)
+    source = tmp_path / "source.txt"
+    retained = source.read_bytes().replace(b"July 1, 2025", b"June 30, 2025", 1)
+    source.write_bytes(retained)
+    manifest = tmp_path / "manifest.json"
+    data = json.loads(manifest.read_bytes())
+    data["version"]["effective_from"] = "2025-06-30"
+    data["version"]["original_sha256"] = sha256(retained).hexdigest()
+    manifest.write_text(json.dumps(data), encoding="utf-8")
+    verify_snapshot(tmp_path)
+    monkeypatch.setattr(public_ipac, "_SNAPSHOTS", (SNAPSHOT, tmp_path))
+
+    response = client.get(PATH, params={"q": query, "as_of": "2025-06-30"})
     assert response.status_code == 200
     assert response.json() == {"status": "insufficient_evidence"}
