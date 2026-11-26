@@ -1,0 +1,33 @@
+{
+  "document": {
+    "id": "4a4e5e9a-42d4-5e45-b300-00bbfff8b6c0",
+    "title": "O. Reg. 246/22: General",
+    "jurisdiction": "CA-ON",
+    "kind": "regulation",
+    "source_url": "https://www.ontario.ca/laws/regulation/220246"
+  },
+  "version": {
+    "id": "a76a76bc-6787-59d7-a733-431f23f58f45",
+    "document_id": "4a4e5e9a-42d4-5e45-b300-00bbfff8b6c0",
+    "version": "v29",
+    "version_url": "https://www.ontario.ca/laws/regulation/220246/v29",
+    "retrieved_at": "2026-11-22T16:39:34.052961Z",
+    "original_sha256": "0fff85c2802662ad25d04ec2723608d8e30de0ce92c29e44e7c337a6f6c78f33",
+    "effective_from": "2025-07-01",
+    "effective_until": "2025-08-01"
+  },
+  "passages": [
+    {
+      "section_id": "db81b036-c7fe-513f-8d26-572f6c6ec17a",
+      "locator": "s. 102 (3)",
+      "citation_url": "https://www.ontario.ca/laws/regulation/220246/v29#BK129",
+      "citation": {
+        "start": 4,
+        "end": 143,
+        "quote": "The Director shall update the standards and protocols mentioned in subsection (2) regularly to reflect relevant evidence and best practice.",
+        "source_version_id": "a76a76bc-6787-59d7-a733-431f23f58f45",
+        "section_id": "db81b036-c7fe-513f-8d26-572f6c6ec17a"
+      }
+    }
+  ]
+}
