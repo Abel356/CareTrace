@@ -6,10 +6,12 @@ from caretrace_api.citation_lookup import (
     InsufficientEvidence,
     PublicCitationLookup,
     PublicCitationMatch,
+    resolve_version,
 )
 from caretrace_api.public_snapshot import verify_snapshot
 
-_SNAPSHOT = Path(__file__).resolve().parents[4] / "corpus/ontario/220246/v28"
+_CORPUS = Path(__file__).resolve().parents[4] / "corpus/ontario/220246"
+_SNAPSHOTS = (_CORPUS / "v28", _CORPUS / "v29")
 
 
 def lookup(query: str, as_of: date) -> PublicCitationLookup:
@@ -18,12 +20,14 @@ def lookup(query: str, as_of: date) -> PublicCitationLookup:
         return InsufficientEvidence(status="insufficient_evidence")
 
     try:
-        manifest = verify_snapshot(_SNAPSHOT)
+        manifests = tuple(verify_snapshot(path) for path in _SNAPSHOTS)
     except (OSError, ValueError, OverflowError):
         return InsufficientEvidence(status="insufficient_evidence")
 
-    if manifest.version.is_effective_on(as_of) is not True:
+    version = resolve_version((manifest.version for manifest in manifests), as_of)
+    if version is None:
         return InsufficientEvidence(status="insufficient_evidence")
+    manifest = next(manifest for manifest in manifests if manifest.version == version)
 
     matches = tuple(
         passage

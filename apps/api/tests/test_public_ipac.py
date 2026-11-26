@@ -86,7 +86,7 @@ def test_public_lookup_returns_both_passages_for_a_shared_query(
     ("query", "as_of"),
     [
         ("protocols", "2025-06-26"),
-        ("protocols", "2025-07-01"),
+        ("protocols", "2025-08-01"),
         ("surveillance", "2025-06-26"),
         ("surveillance", "2025-07-01"),
         ("unlisted", "2025-06-27"),
@@ -148,7 +148,7 @@ def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
         copytree(SNAPSHOT, tmp_path, dirs_exist_ok=True)
         source = tmp_path / "source.txt"
         source.write_bytes(source.read_bytes() + b"\n")
-    monkeypatch.setattr(public_ipac, "_SNAPSHOT", tmp_path)
+    monkeypatch.setattr(public_ipac, "_SNAPSHOTS", (tmp_path, SNAPSHOT.parent / "v29"))
 
     response = client.get(PATH, params={"q": query, "as_of": "2025-06-27"})
     assert response.status_code == 200
