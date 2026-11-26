@@ -175,21 +175,34 @@ def test_public_lookup_rejects_writes_and_invalid_dates(client: TestClient) -> N
 
 
 @pytest.mark.parametrize("missing", [True, False], ids=["missing", "changed"])
-@pytest.mark.parametrize("query", ["protocols", "surveillance"])
+@pytest.mark.parametrize(
+    ("revision", "query", "as_of"),
+    [
+        ("v28", "protocols", "2025-06-27"),
+        ("v28", "surveillance", "2025-06-27"),
+        ("v29", "protocols", "2025-07-01"),
+        ("v29", "protocols", "2025-06-30"),
+    ],
+)
 def test_public_lookup_abstains_for_unavailable_or_invalid_snapshot(
     client: TestClient,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     missing: bool,
+    revision: str,
     query: str,
+    as_of: str,
 ) -> None:
     if not missing:
-        copytree(SNAPSHOT, tmp_path, dirs_exist_ok=True)
+        copytree(SNAPSHOT.parent / revision, tmp_path, dirs_exist_ok=True)
         source = tmp_path / "source.txt"
         source.write_bytes(source.read_bytes() + b"\n")
-    monkeypatch.setattr(public_ipac, "_SNAPSHOTS", (tmp_path, SNAPSHOT.parent / "v29"))
+    snapshots = tuple(
+        tmp_path if path.name == revision else path for path in public_ipac._SNAPSHOTS
+    )
+    monkeypatch.setattr(public_ipac, "_SNAPSHOTS", snapshots)
 
-    response = client.get(PATH, params={"q": query, "as_of": "2025-06-27"})
+    response = client.get(PATH, params={"q": query, "as_of": as_of})
     assert response.status_code == 200
     assert response.json() == {"status": "insufficient_evidence"}
 
