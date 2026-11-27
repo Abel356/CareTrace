@@ -1,5 +1,36 @@
 # Progress
 
+## November 27, 2026
+
+- Retained O. Reg. 246/22 v29, s. 102 (2), alongside subsection (3). A fresh
+  Ontario e-Laws download reproduced the November 22 capture's July 1–31, 2025
+  historical notice and both excerpts under `BK129`. The manifest retains the
+  original capture time and records the updated SHA-256. The surveillance span
+  is `[4, 273)` in v29 and `[4, 275)` in v28 because the clause spacing differs.
+  The v29 subsection (3) span remains `[4, 143)`.
+  [Ontario e-Laws v29](https://www.ontario.ca/laws/regulation/220246/v29#BK129)
+- Both snapshot verifiers passed. Eleven live FastAPI and Next.js loopback cases
+  checked the API responses and rendered panel. On June 30 and July 1,
+  `surveillance` returns subsection (2) and `protocols` returns both subsections,
+  each with the selected version and its exact citation. June 26 and August 1
+  return insufficient evidence. Automated checks cover both ends of each version.
+- Local checks passed 114 Python tests and 14 web tests, lint, strict types,
+  private-key and secret scans, both production builds, and OpenAPI drift detection.
+  Windows blocked the secret-hook launcher, so its Python entry point ran directly.
+  The live PostgreSQL test was skipped locally. Hosted CI passed 115 Python tests,
+  including PostgreSQL with pgvector, and 14 web tests. The existing upstream
+  TestClient deprecation warning remains. No task blocker remains.
+  [GitHub Actions run for the final code checkpoint](https://github.com/Abel356/CareTrace/actions/runs/46033893095)
+
+### Checkpoints
+
+Seven commits cover the task and handoff. They verify the v28 baseline and
+outer date boundaries, allowlist the new public digest, retain the generated
+v29 evidence, verify surveillance spans in both versions, verify shared-query
+citations, document the expanded excerpt and retire its obsolete digest, and
+record verification and the November 28 plan. The single-passage expansion
+and its regressions supported seven coherent checkpoints.
+
 ## November 26, 2026
 
 - Retained O. Reg. 246/22 v29, s. 102 (3), for July 1 through July 31, 2025,

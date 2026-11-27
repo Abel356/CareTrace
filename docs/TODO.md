@@ -1,15 +1,16 @@
-# November 27, 2026
+# November 28, 2026
 
-## Verify surveillance citations across the v28–v29 changeover
+## Compare a synthetic surveillance policy with one verified citation
 
-Retain subsection 102 (2) in the v29 Ontario e-Laws snapshot. Verify its
-operative text, clause formatting, and section anchor against the official
-historical version. Recompute the snapshot checksum and preserve the source
-URL, jurisdiction, version, retrieval timestamp, effective interval, and
-exact Unicode offsets for both retained v29 subsections.
+Build one offline, deterministic policy coverage example for subsection
+102 (2) (a) of the verified Ontario e-Laws snapshot selected by review date.
+Use a provisional obligation tied to that citation and synthetic policy
+excerpts with stable IDs and exact spans. Reuse the existing obligation,
+policy excerpt, and coverage contracts. Show the selected source version,
+the text searched, and any supporting policy span in the result.
 
-Verify that a surveillance query returns subsection 102 (2) with the v28
-citation on June 30 and the v29 citation on July 1. Check that a shared
-protocols query cites both subsections in each version and that dates
-outside verified coverage still abstain. Run both snapshot verifiers,
-the API and web tests, the live panel, and the OpenAPI drift check.
+Verify a directly supporting passage, a partial passage, an unrelated
+passage, and an ambiguous passage that needs review. Require explicit
+abstention when the selected date has no verified source. Exercise a
+cross-tenant or policy-version mismatch, then run the focused tests, full
+Python checks, and contract drift check.
