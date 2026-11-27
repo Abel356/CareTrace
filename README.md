@@ -59,11 +59,12 @@ The command checks the retained UTF-8 bytes, historical period, and exact citati
 
 To query these snapshots from a local checkout, set `CARETRACE_ENABLE_PUBLIC_IPAC=true`
 in `.env` and run the API in development or test. Try
-`GET /api/v1/public/ipac/citations?q=standards%20and%20protocols&as_of=2025-06-30`
-and repeat with July 1 to see the version and source link change.
+`GET /api/v1/public/ipac/citations?q=surveillance&as_of=2025-06-30`
+and repeat with July 1 to see the version and source link change. A `protocols`
+query returns both curated subsections in the version covering the selected date.
 The lookup searches the verified passages for the version covering the requested date.
 Version v28 covers June 27–30, 2025, with subsections 102 (2) and (3).
-Version v29 covers July 1–31, 2025, with subsection 102 (3).
+Version v29 covers July 1–31, 2025, with subsections 102 (2) and (3).
 Uncovered dates, overlapping coverage for the requested date, unmatched queries,
 and unavailable or invalid snapshots return `insufficient_evidence`. The route is
 disabled in production.
@@ -83,7 +84,7 @@ The web server reads the API readiness endpoint. For a different API origin, cop
 To open the public citation panel, also set `CARETRACE_ENABLE_PUBLIC_IPAC=true` in
 `apps/web/.env.local` and restart the development web server. Enable the same flag
 for the API as described above. In **Citation lookup**, enter `surveillance` or
-`protocols` and select June 27, 2025 to see the matching passage and subsection link.
+`protocols` and select June 30 or July 1, 2025 to see the matching passages and links.
 
 Run `pnpm run contracts:generate` after changing OpenAPI and `pnpm run contracts:check`
 to detect stale TypeScript contracts.
