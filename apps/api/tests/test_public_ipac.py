@@ -94,22 +94,33 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     assert span["source_version_id"] == version["id"]
 
 
-@pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
+@pytest.mark.parametrize(
+    ("as_of", "revision", "end"),
+    [
+        ("2025-06-27", "v28", 275),
+        ("2025-06-30", "v28", 275),
+        ("2025-07-01", "v29", 273),
+        ("2025-07-31", "v29", 273),
+    ],
+)
 def test_public_citation_returns_the_exact_surveillance_passage(
-    client: TestClient,
-    as_of: str,
+    client: TestClient, as_of: str, revision: str, end: int
 ) -> None:
     response = client.get(PATH, params={"q": "surveillance", "as_of": as_of})
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "matched"
+    assert body["version"]["version"] == revision
     (passage,) = body["passages"]
     assert passage["locator"] == "s. 102 (2)"
-    assert passage["citation_url"].endswith("/v28#BK129")
-    _, section, _ = (SNAPSHOT / "source.txt").read_text(encoding="utf-8").split("\n\n")
+    assert (
+        passage["citation_url"] == f"{body['document']['source_url']}/{revision}#BK129"
+    )
+    source = SNAPSHOT.parent / revision / "source.txt"
+    _, section, _ = source.read_text(encoding="utf-8").split("\n\n")
     span = passage["span"]
-    assert (span["start"], span["end"]) == (4, 275)
-    assert span["quote"] == section[4:275]
+    assert (span["start"], span["end"]) == (4, end)
+    assert span["quote"] == section[4:end]
     assert span["source_version_id"] == body["version"]["id"]
 
 
