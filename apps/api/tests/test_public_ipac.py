@@ -124,17 +124,26 @@ def test_public_citation_returns_the_exact_surveillance_passage(
     assert span["source_version_id"] == body["version"]["id"]
 
 
-@pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
+@pytest.mark.parametrize(
+    ("as_of", "revision"),
+    [
+        ("2025-06-27", "v28"),
+        ("2025-06-30", "v28"),
+        ("2025-07-01", "v29"),
+        ("2025-07-31", "v29"),
+    ],
+)
 def test_public_lookup_returns_both_passages_for_a_shared_query(
-    client: TestClient, as_of: str
+    client: TestClient, as_of: str, revision: str
 ) -> None:
     response = client.get(PATH, params={"q": "protocols", "as_of": as_of})
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "matched"
-    assert [passage["locator"] for passage in body["passages"]] == [
-        "s. 102 (2)",
-        "s. 102 (3)",
+    expected_url = f"{body['document']['source_url']}/{revision}#BK129"
+    assert [(p["locator"], p["citation_url"]) for p in body["passages"]] == [
+        ("s. 102 (2)", expected_url),
+        ("s. 102 (3)", expected_url),
     ]
 
 
