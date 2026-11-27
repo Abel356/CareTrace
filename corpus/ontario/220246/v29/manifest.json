@@ -12,11 +12,23 @@
     "version": "v29",
     "version_url": "https://www.ontario.ca/laws/regulation/220246/v29",
     "retrieved_at": "2026-11-22T16:39:34.052961Z",
-    "original_sha256": "0fff85c2802662ad25d04ec2723608d8e30de0ce92c29e44e7c337a6f6c78f33",
+    "original_sha256": "2bed131ed23860db600ddffe67baa4f83bc729c74a5e5fc41311b47b381aee5e",
     "effective_from": "2025-07-01",
     "effective_until": "2025-08-01"
   },
   "passages": [
+    {
+      "section_id": "3c328485-d9ae-53f9-9f40-77bc9275643d",
+      "locator": "s. 102 (2)",
+      "citation_url": "https://www.ontario.ca/laws/regulation/220246/v29#BK129",
+      "citation": {
+        "start": 4,
+        "end": 273,
+        "quote": "The licensee shall implement,\n(a) any surveillance protocols issued by the Director for a particular communicable disease or disease of public health significance; and\n(b) any standard or protocol issued by the Director with respect to infection prevention and control.",
+        "source_version_id": "a76a76bc-6787-59d7-a733-431f23f58f45",
+        "section_id": "3c328485-d9ae-53f9-9f40-77bc9275643d"
+      }
+    },
     {
       "section_id": "db81b036-c7fe-513f-8d26-572f6c6ec17a",
       "locator": "s. 102 (3)",
