@@ -94,17 +94,23 @@ def test_public_citation_returns_the_verified_span_at_both_boundaries(
     assert span["source_version_id"] == version["id"]
 
 
-def test_public_citation_finds_the_added_surveillance_passage(
+@pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
+def test_public_citation_returns_the_exact_surveillance_passage(
     client: TestClient,
+    as_of: str,
 ) -> None:
-    response = client.get(PATH, params={"q": "surveillance", "as_of": "2025-06-27"})
+    response = client.get(PATH, params={"q": "surveillance", "as_of": as_of})
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "matched"
     (passage,) = body["passages"]
     assert passage["locator"] == "s. 102 (2)"
     assert passage["citation_url"].endswith("/v28#BK129")
-    assert "particular communicable disease" in passage["span"]["quote"]
+    _, section, _ = (SNAPSHOT / "source.txt").read_text(encoding="utf-8").split("\n\n")
+    span = passage["span"]
+    assert (span["start"], span["end"]) == (4, 275)
+    assert span["quote"] == section[4:275]
+    assert span["source_version_id"] == body["version"]["id"]
 
 
 @pytest.mark.parametrize("as_of", ["2025-06-27", "2025-06-30"])
@@ -127,7 +133,7 @@ def test_public_lookup_returns_both_passages_for_a_shared_query(
         ("protocols", "2025-06-26"),
         ("protocols", "2025-08-01"),
         ("surveillance", "2025-06-26"),
-        ("surveillance", "2025-07-01"),
+        ("surveillance", "2025-08-01"),
         ("unlisted", "2025-06-27"),
         ("Historical version", "2025-06-27"),
         ("  ", "2025-06-27"),
